@@ -1,0 +1,4 @@
+Metodo,Capital inicial,Tasa anual,Frecuencia (n),Plazo (anios),Monto final,Ganancia,Anios para la meta,Velocidad final A'(t)
+Interes simple,500000,0.06,No aplica,15,950000.0,450000.0,16.666666666666668,30000.0
+Interes compuesto,500000,0.06,12,15,1227046.7811235832,727046.7811235832,11.581310134224728,73439.36108208742
+Capitalizacion continua,500000,0.06,Infinita,15,1229801.5555784747,729801.5555784747,11.552453009332423,73788.09333470848
