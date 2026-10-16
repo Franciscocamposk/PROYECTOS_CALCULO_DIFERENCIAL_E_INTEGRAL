@@ -23,9 +23,9 @@ $$
 La recomendación se obtiene comparando una función de decisión $J(x)$, sujeta a las restricciones del problema:
 
 $$
-x^*=\mathrm{arg\,max}_{x\in\mathcal{D}}J(x)
+x^{*}=\mathrm{arg\,max}_{x\in\mathcal{D}}J(x)
 \qquad\text{o}\qquad
-x^*=\mathrm{arg\,min}_{x\in\mathcal{D}}J(x)
+x^{*}=\mathrm{arg\,min}_{x\in\mathcal{D}}J(x)
 $$
 
 Los parámetros, límites de integración y funciones específicas de cada caso se encuentran en su informe PDF y en su hoja de cálculo.
