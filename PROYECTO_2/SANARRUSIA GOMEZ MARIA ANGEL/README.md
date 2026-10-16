@@ -25,7 +25,7 @@ $$
 La regla de cierre seleccionada minimiza la exposición respetando las restricciones operativas:
 
 $$
-x^*=\operatorname*{arg\,min}_{x\in\mathcal{D}}X(x)
+x^*=\mathrm{arg\,min}_{x\in\mathcal{D}}X(x)
 $$
 
 ## Archivos

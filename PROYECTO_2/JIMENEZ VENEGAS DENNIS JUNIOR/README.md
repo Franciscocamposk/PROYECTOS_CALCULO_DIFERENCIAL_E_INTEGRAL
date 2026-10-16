@@ -25,7 +25,7 @@ $$
 El sitio recomendado maximiza el beneficio esperado de la restauración:
 
 $$
-x^*=\operatorname*{arg\,max}_{x\in\mathcal{D}}B(x)
+x^*=\mathrm{arg\,max}_{x\in\mathcal{D}}B(x)
 $$
 
 ## Archivos

@@ -25,7 +25,7 @@ $$
 El periodo recomendado maximiza el número esperado de registros:
 
 $$
-(a^*,b^*)=\operatorname*{arg\,max}_{(a,b)\in\mathcal{D}}N(a,b)
+(a^*,b^*)=\mathrm{arg\,max}_{(a,b)\in\mathcal{D}}N(a,b)
 $$
 
 ## Archivos

@@ -25,9 +25,9 @@ $$
 La combinación seleccionada debe minimizar el costo y cumplir la disponibilidad requerida:
 
 $$
-x^*=\operatorname*{arg\,min}_{x\in\mathcal{D}}C(x),
+x^*=\mathrm{arg\,min}_{x\in\mathcal{D}}C(x),
 \qquad
-\operatorname{disponibilidad}(x)\geq 0.99
+\mathrm{disponibilidad}(x)\geq 0.99
 $$
 
 ## Archivos

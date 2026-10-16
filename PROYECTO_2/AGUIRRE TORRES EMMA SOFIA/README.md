@@ -25,7 +25,7 @@ $$
 donde $P(t)$ es la potencia modelada. La alternativa recomendada se selecciona con:
 
 $$
-x^*=\operatorname*{arg\,max}_{x\in\mathcal{D}}\;J(x)
+x^*=\mathrm{arg\,max}_{x\in\mathcal{D}}\;J(x)
 $$
 
 ## Archivos

@@ -25,7 +25,7 @@ $$
 La medida recomendada minimiza el costo y reduce la energía sonora recibida:
 
 $$
-x^*=\operatorname*{arg\,min}_{x\in\mathcal{D}}C(x)
+x^*=\mathrm{arg\,min}_{x\in\mathcal{D}}C(x)
 $$
 
 ## Archivos

@@ -25,7 +25,7 @@ $$
 La opción de reforzamiento se compara mediante una función de pérdida esperada $L(x)$:
 
 $$
-x^*=\operatorname*{arg\,min}_{x\in\mathcal{D}}L(x)
+x^*=\mathrm{arg\,min}_{x\in\mathcal{D}}L(x)
 $$
 
 ## Archivos

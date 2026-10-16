@@ -25,7 +25,7 @@ $$
 donde $r(t)$ representa la tasa modelada. La estrategia se elige mediante:
 
 $$
-x^*=\operatorname*{arg\,max}_{x\in\mathcal{D}}\;J(x)
+x^*=\mathrm{arg\,max}_{x\in\mathcal{D}}\;J(x)
 $$
 
 ## Archivos

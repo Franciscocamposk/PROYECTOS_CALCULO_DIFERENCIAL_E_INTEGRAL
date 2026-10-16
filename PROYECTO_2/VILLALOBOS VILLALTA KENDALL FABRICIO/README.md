@@ -25,7 +25,7 @@ $$
 La estrategia recomendada maximiza la atención respetando la restricción sobre el sueño:
 
 $$
-x^*=\operatorname*{arg\,max}_{x\in\mathcal{D}}A(x),
+x^*=\mathrm{arg\,max}_{x\in\mathcal{D}}A(x),
 \qquad
 S(x)\geq S_{\min}
 $$
