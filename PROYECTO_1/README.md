@@ -1,5 +1,7 @@
 # Proyecto 1 — Cálculo Diferencial e Integral
 
+![Proyecto](https://img.shields.io/badge/Proyecto-1-0b4f8a?style=for-the-badge) ![Modalidad](https://img.shields.io/badge/Modalidad-Parejas-2e7d32?style=for-the-badge) ![Curso](https://img.shields.io/badge/MA--0321-UCR-e08a2e?style=for-the-badge)
+
 Repositorio del **Proyecto Aplicado de Cálculo y Analítica Empresarial**.
 
 - **Universidad:** Universidad de Costa Rica, Escuela de Matemática.
@@ -9,6 +11,8 @@ Repositorio del **Proyecto Aplicado de Cálculo y Analítica Empresarial**.
 - **Defensa oral:** obligatoria para los dos integrantes. Deben explicar el problema, el modelo, las derivadas o límites, el código y la recomendación.
 
 Este archivo explica el repositorio completo, el propósito del trabajo y cada proyecto. El `README.md` de cada carpeta explica el desarrollo de ese equipo.
+
+> **Flujo del proyecto:** problema empresarial → modelo matemático → cálculo → programa → recomendación.
 
 ## Entrega
 

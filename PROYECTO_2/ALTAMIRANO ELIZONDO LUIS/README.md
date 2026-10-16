@@ -1,5 +1,7 @@
 # Proyecto 5 — Procrastinación y entregas de tareas en Mediación Virtual
 
+![Proyecto](https://img.shields.io/badge/Proyecto%202-5-0b4f8a?style=flat-square) ![Código](https://img.shields.io/badge/Código-C--10-2e7d32?style=flat-square) ![Modalidad](https://img.shields.io/badge/Modalidad-Individual-e08a2e?style=flat-square)
+
 **Estudiante:** Luis Altamirano Elizondo  
 **Código:** C-10  
 **Modalidad:** individual

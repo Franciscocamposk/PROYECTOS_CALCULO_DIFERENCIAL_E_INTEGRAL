@@ -1,5 +1,7 @@
 # Proyecto 2 — Cafeína, atención y sueño en semana de exámenes
 
+![Proyecto](https://img.shields.io/badge/Proyecto%202-2-0b4f8a?style=flat-square) ![Código](https://img.shields.io/badge/Código-C--09-2e7d32?style=flat-square) ![Modalidad](https://img.shields.io/badge/Modalidad-Individual-e08a2e?style=flat-square)
+
 **Estudiante:** Kendall Fabricio Villalobos Villalta  
 **Código:** C-09  
 **Modalidad:** individual

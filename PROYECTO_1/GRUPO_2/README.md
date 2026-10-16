@@ -1,5 +1,7 @@
 # Grupo 2
 
+![Proyecto](https://img.shields.io/badge/Proyecto%201-Grupo%202-0b4f8a?style=flat-square) ![Modalidad](https://img.shields.io/badge/Modalidad-Parejas-2e7d32?style=flat-square)
+
 **Tema asignado: Inventario Óptimo y Utilidad Neta de una Tienda Virtual**
 
 ## Integrantes

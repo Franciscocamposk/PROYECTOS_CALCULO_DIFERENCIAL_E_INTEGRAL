@@ -1,5 +1,7 @@
 # Proyecto 4 — Gases del volcán Poás y cierre preventivo del mirador
 
+![Proyecto](https://img.shields.io/badge/Proyecto%202-4-0b4f8a?style=flat-square) ![Código](https://img.shields.io/badge/Código-C--07-2e7d32?style=flat-square) ![Modalidad](https://img.shields.io/badge/Modalidad-Individual-e08a2e?style=flat-square)
+
 **Estudiante:** María Angel Sanarrusia Gomez  
 **Código:** C-07  
 **Modalidad:** individual

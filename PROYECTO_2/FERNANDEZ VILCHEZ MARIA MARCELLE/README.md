@@ -1,5 +1,7 @@
 # Proyecto 1 — Somnolencia al volante en la ruta Golfito–San José
 
+![Proyecto](https://img.shields.io/badge/Proyecto%202-1-0b4f8a?style=flat-square) ![Código](https://img.shields.io/badge/Código-C--02-2e7d32?style=flat-square) ![Modalidad](https://img.shields.io/badge/Modalidad-Individual-e08a2e?style=flat-square)
+
 **Estudiante:** María Marcelle Fernández Vilchez  
 **Código:** C-02  
 **Modalidad:** individual

@@ -1,5 +1,7 @@
 # Proyecto 9 — Repotenciación de la Planta Eólica Tejona en Tilarán
 
+![Proyecto](https://img.shields.io/badge/Proyecto%202-9-0b4f8a?style=flat-square) ![Código](https://img.shields.io/badge/Código-C--01-2e7d32?style=flat-square) ![Modalidad](https://img.shields.io/badge/Modalidad-Individual-e08a2e?style=flat-square)
+
 **Estudiante:** Emma Sofia Aguirre Torres  
 **Código:** C-01  
 **Modalidad:** individual

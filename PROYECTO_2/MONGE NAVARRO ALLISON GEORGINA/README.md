@@ -1,5 +1,7 @@
 # Proyecto 6 — Migración de aves rapaces sobre Këköldi, Talamanca
 
+![Proyecto](https://img.shields.io/badge/Proyecto%202-6-0b4f8a?style=flat-square) ![Código](https://img.shields.io/badge/Código-C--06-2e7d32?style=flat-square) ![Modalidad](https://img.shields.io/badge/Modalidad-Individual-e08a2e?style=flat-square)
+
 **Estudiante:** Allison Georgina Monge Navarro  
 **Código:** C-06  
 **Modalidad:** individual

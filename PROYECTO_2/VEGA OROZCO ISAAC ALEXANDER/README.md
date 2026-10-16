@@ -1,5 +1,7 @@
 # Proyecto 10 — Ruido de embarcaciones y ballenas jorobadas en el Golfo Dulce
 
+![Proyecto](https://img.shields.io/badge/Proyecto%202-10-0b4f8a?style=flat-square) ![Código](https://img.shields.io/badge/Código-C--08-2e7d32?style=flat-square) ![Modalidad](https://img.shields.io/badge/Modalidad-Individual-e08a2e?style=flat-square)
+
 **Estudiante:** Isaac Alexander Vega Orozco  
 **Código:** C-08  
 **Modalidad:** individual

@@ -1,5 +1,7 @@
 # Proyecto 8 — Energía de las olas para una boya frente a Pavones
 
+![Proyecto](https://img.shields.io/badge/Proyecto%202-8-0b4f8a?style=flat-square) ![Código](https://img.shields.io/badge/Código-C--04-2e7d32?style=flat-square) ![Modalidad](https://img.shields.io/badge/Modalidad-Individual-e08a2e?style=flat-square)
+
 **Estudiante:** Joseph Steven Hernandez Torrentes  
 **Código:** C-04  
 **Modalidad:** individual

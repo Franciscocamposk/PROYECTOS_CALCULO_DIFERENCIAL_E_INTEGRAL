@@ -1,5 +1,7 @@
 # Proyecto 3 — Amenaza sísmica y reforzamiento del Hospital de Golfito
 
+![Proyecto](https://img.shields.io/badge/Proyecto%202-3-0b4f8a?style=flat-square) ![Código](https://img.shields.io/badge/Código-C--03-2e7d32?style=flat-square) ![Modalidad](https://img.shields.io/badge/Modalidad-Individual-e08a2e?style=flat-square)
+
 **Estudiante:** Jeremy Fabrizio Fonseca Araya  
 **Código:** C-03  
 **Modalidad:** individual

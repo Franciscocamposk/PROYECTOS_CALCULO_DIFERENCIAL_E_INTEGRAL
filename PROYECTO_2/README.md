@@ -1,5 +1,7 @@
 # Proyecto 2 — Modelación con integración
 
+![Proyecto](https://img.shields.io/badge/Proyecto-2-0b4f8a?style=for-the-badge) ![Modalidad](https://img.shields.io/badge/Modalidad-Individual-2e7d32?style=for-the-badge) ![Evaluación](https://img.shields.io/badge/Evaluación-60%2F40-e08a2e?style=for-the-badge)
+
 Proyecto individual del curso **MA-0321 Cálculo Diferencial e Integral**, Universidad de Costa Rica, II ciclo 2026.
 
 Cada entrega incluye un informe PDF y una hoja de cálculo con los datos y cálculos. La evaluación corresponde a **60 puntos de trabajo escrito** y **40 puntos de defensa**. La fecha de entrega indicada es el **miércoles 18 de noviembre de 2026**.
@@ -33,3 +35,14 @@ Cada entrega incluye un informe PDF y una hoja de cálculo con los datos y cálc
 ## Carpetas individuales
 
 Cada estudiante tiene un README con su tema, pregunta de decisión, objetivo, archivos y forma de revisión.
+
+## Flujo de trabajo
+
+```mermaid
+flowchart LR
+	A[Datos entregados] --> B[Modelo matemático]
+	B --> C[Integral definida]
+	C --> D[Python y gráficas]
+	D --> E[Verificación]
+	E --> F[Recomendación]
+```

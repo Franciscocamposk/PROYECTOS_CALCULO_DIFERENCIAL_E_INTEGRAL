@@ -1,5 +1,7 @@
 # Proyecto 7 — Estrés térmico de los arrecifes del Golfo Dulce
 
+![Proyecto](https://img.shields.io/badge/Proyecto%202-7-0b4f8a?style=flat-square) ![Código](https://img.shields.io/badge/Código-C--05-2e7d32?style=flat-square) ![Modalidad](https://img.shields.io/badge/Modalidad-Individual-e08a2e?style=flat-square)
+
 **Estudiante:** Dennis Junior Jimenez Venegas  
 **Código:** C-05  
 **Modalidad:** individual

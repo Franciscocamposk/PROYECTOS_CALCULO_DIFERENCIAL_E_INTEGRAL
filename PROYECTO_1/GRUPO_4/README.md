@@ -1,5 +1,7 @@
 # Grupo 4
 
+![Proyecto](https://img.shields.io/badge/Proyecto%201-Grupo%204-0b4f8a?style=flat-square) ![Modalidad](https://img.shields.io/badge/Modalidad-Parejas-2e7d32?style=flat-square)
+
 **Tema asignado: Crecimiento de Usuarios y Planificación de Capacidad Digital**
 
 ## Integrantes
