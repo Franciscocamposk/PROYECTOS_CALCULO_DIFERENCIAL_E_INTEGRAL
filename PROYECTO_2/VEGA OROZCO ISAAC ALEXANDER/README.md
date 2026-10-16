@@ -14,6 +14,20 @@
 
 Analizar la energía sonora acumulada mediante integración, comparar medidas de control y recomendar la alternativa de menor costo y mayor reducción.
 
+## Modelo matemático
+
+La energía sonora recibida durante un intervalo se representa por:
+
+$$
+E(a,b)=\int_a^b I(t)\,dt
+$$
+
+La medida recomendada minimiza el costo y reduce la energía sonora recibida:
+
+$$
+x^*=\operatorname*{arg\,min}_{x\in\mathcal{D}}C(x)
+$$
+
 ## Archivos
 
 - [Informe PDF](P10_C-08_VEGA.pdf)

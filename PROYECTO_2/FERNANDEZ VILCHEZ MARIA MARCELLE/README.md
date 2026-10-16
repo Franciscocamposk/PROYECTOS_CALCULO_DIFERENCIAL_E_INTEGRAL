@@ -14,6 +14,20 @@
 
 Analizar la somnolencia durante el recorrido mediante un modelo de integración y determinar un umbral que apoye una decisión de seguridad vial.
 
+## Modelo matemático
+
+La exposición acumulada a la somnolencia durante el recorrido se modela como:
+
+$$
+S(a,b)=\int_a^b s(t)\,dt
+$$
+
+La alarma se activa cuando el índice alcanza el umbral $u$:
+
+$$
+s(t)\geq u
+$$
+
 ## Archivos
 
 - [Informe PDF](P01_C-02_FERNANDEZ.pdf)

@@ -14,6 +14,20 @@
 
 Analizar los datos de la planta mediante un modelo de integración, comparar las alternativas de repotenciación y sustentar una recomendación técnica.
 
+## Modelo matemático
+
+La producción acumulada durante un intervalo se representa por:
+
+$$
+E(a,b)=\int_a^b P(t)\,dt
+$$
+
+donde $P(t)$ es la potencia modelada. La alternativa recomendada se selecciona con:
+
+$$
+x^*=\operatorname*{arg\,max}_{x\in\mathcal{D}}\;J(x)
+$$
+
 ## Archivos
 
 - [Informe PDF](P09_C-01_AGUIRRE.pdf)

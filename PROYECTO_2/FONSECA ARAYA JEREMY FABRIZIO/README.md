@@ -14,6 +14,20 @@
 
 Aplicar integración al análisis de la amenaza sísmica, comparar opciones de reforzamiento y evaluar su conveniencia para la infraestructura hospitalaria.
 
+## Modelo matemático
+
+La amenaza acumulada durante el intervalo de análisis se representa por:
+
+$$
+H(a,b)=\int_a^b h(t)\,dt
+$$
+
+La opción de reforzamiento se compara mediante una función de pérdida esperada $L(x)$:
+
+$$
+x^*=\operatorname*{arg\,min}_{x\in\mathcal{D}}L(x)
+$$
+
 ## Archivos
 
 - [Informe PDF](P03_C-03_FONSECA.pdf)

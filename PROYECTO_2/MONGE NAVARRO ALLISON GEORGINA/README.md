@@ -14,6 +14,20 @@
 
 Modelar la migración mediante integración, analizar los periodos de mayor actividad y recomendar fechas y horarios de monitoreo.
 
+## Modelo matemático
+
+La cantidad esperada de aves observadas durante un intervalo se representa por:
+
+$$
+N(a,b)=\int_a^b n(t)\,dt
+$$
+
+El periodo recomendado maximiza el número esperado de registros:
+
+$$
+(a^*,b^*)=\operatorname*{arg\,max}_{(a,b)\in\mathcal{D}}N(a,b)
+$$
+
 ## Archivos
 
 - [Informe PDF](P06_C-06_MONGE.pdf)

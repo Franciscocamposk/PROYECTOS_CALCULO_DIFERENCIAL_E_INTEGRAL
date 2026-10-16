@@ -14,6 +14,22 @@
 
 Estimar la energía acumulada de las olas mediante integración y comparar combinaciones de convertidor y batería para la boya.
 
+## Modelo matemático
+
+La energía disponible en el intervalo $[a,b]$ se representa por:
+
+$$
+E(a,b)=\int_a^b p(t)\,dt
+$$
+
+La combinación seleccionada debe minimizar el costo y cumplir la disponibilidad requerida:
+
+$$
+x^*=\operatorname*{arg\,min}_{x\in\mathcal{D}}C(x),
+\qquad
+\operatorname{disponibilidad}(x)\geq 0.99
+$$
+
 ## Archivos
 
 - [Informe PDF](P08_C-04_HERNANDEZ.pdf)

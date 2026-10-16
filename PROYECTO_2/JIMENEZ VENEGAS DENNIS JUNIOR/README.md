@@ -14,6 +14,20 @@
 
 Cuantificar el estrés térmico acumulado mediante integración, comparar sitios y definir una recomendación para la restauración y las alertas.
 
+## Modelo matemático
+
+La exposición térmica acumulada en un sitio se expresa como:
+
+$$
+E(a,b)=\int_a^b e(t)\,dt
+$$
+
+El sitio recomendado maximiza el beneficio esperado de la restauración:
+
+$$
+x^*=\operatorname*{arg\,max}_{x\in\mathcal{D}}B(x)
+$$
+
 ## Archivos
 
 - [Informe PDF](P07_C-05_JIMENEZ.pdf)

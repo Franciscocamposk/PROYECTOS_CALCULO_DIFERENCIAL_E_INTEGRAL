@@ -6,6 +6,30 @@ Proyecto individual del curso **MA-0321 Cálculo Diferencial e Integral**, Unive
 
 Cada entrega incluye un informe PDF y una hoja de cálculo con los datos y cálculos. La evaluación corresponde a **60 puntos de trabajo escrito** y **40 puntos de defensa**. La fecha de entrega indicada es el **miércoles 18 de noviembre de 2026**.
 
+## Modelo matemático común
+
+Para cada caso se estudia una magnitud variable $f(t)$ durante un intervalo $[a,b]$. La cantidad acumulada se representa mediante:
+
+$$
+A(a,b)=\int_a^b f(t)\,dt
+$$
+
+Cuando se necesita comparar periodos de distinta duración, se utiliza el valor promedio:
+
+$$
+\overline{f}=\frac{1}{b-a}\int_a^b f(t)\,dt
+$$
+
+La recomendación se obtiene comparando una función de decisión $J(x)$, sujeta a las restricciones del problema:
+
+$$
+x^*=\operatorname*{arg\,max}_{x\in\mathcal{D}}J(x)
+\qquad\text{o}\qquad
+x^*=\operatorname*{arg\,min}_{x\in\mathcal{D}}J(x)
+$$
+
+Los parámetros, límites de integración y funciones específicas de cada caso se encuentran en su informe PDF y en su hoja de cálculo.
+
 ## Entregas
 
 | Código | Estudiante | Proyecto y tema | Pregunta de decisión |

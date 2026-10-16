@@ -14,6 +14,20 @@
 
 Analizar la exposición acumulada a los gases mediante integración, comparar reglas de cierre y sustentar una medida preventiva.
 
+## Modelo matemático
+
+La exposición acumulada a los gases se modela mediante:
+
+$$
+X(a,b)=\int_a^b c(t)\,dt
+$$
+
+La regla de cierre seleccionada minimiza la exposición respetando las restricciones operativas:
+
+$$
+x^*=\operatorname*{arg\,min}_{x\in\mathcal{D}}X(x)
+$$
+
 ## Archivos
 
 - [Informe PDF](P04_C-07_SANARRUSIA.pdf)

@@ -14,6 +14,20 @@
 
 Modelar el comportamiento de las entregas, aplicar integración a los datos suministrados y comparar estrategias para sustentar una recomendación académica.
 
+## Modelo matemático
+
+La cantidad acumulada de entregas o actividad durante $[a,b]$ se expresa como:
+
+$$
+A(a,b)=\int_a^b r(t)\,dt
+$$
+
+donde $r(t)$ representa la tasa modelada. La estrategia se elige mediante:
+
+$$
+x^*=\operatorname*{arg\,max}_{x\in\mathcal{D}}\;J(x)
+$$
+
 ## Archivos
 
 - [Informe PDF](P05_C-10_ALTAMIRANO.pdf)

@@ -14,6 +14,22 @@
 
 Modelar los efectos de la cafeína mediante integración, comparar bebidas y horarios, y recomendar una estrategia compatible con la atención y el descanso.
 
+## Modelo matemático
+
+Las horas acumuladas de atención durante el periodo de estudio se representan por:
+
+$$
+A(a,b)=\int_a^b a(t)\,dt
+$$
+
+La estrategia recomendada maximiza la atención respetando la restricción sobre el sueño:
+
+$$
+x^*=\operatorname*{arg\,max}_{x\in\mathcal{D}}A(x),
+\qquad
+S(x)\geq S_{\min}
+$$
+
 ## Archivos
 
 - [Informe PDF](P02_C-09_VILLALOBOS.pdf)
