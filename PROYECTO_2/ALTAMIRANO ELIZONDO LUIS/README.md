@@ -21,13 +21,13 @@ La proporción acumulada de entregas y el índice de procrastinación se definen
 $$
 F(t)=\int_0^t f(u)\,du,
 \qquad
-IP=\frac{\bar{t}}{T}=\frac{1}{T}\int_0^T\left[1-F(t)\right]dt
+IP=\frac{\bar{t}}{T}=\frac{1}{T}\int_0^T[1-F(t)]\,dt
 $$
 
 El modelo hiperbólico de la densidad de entregas y su proporción en las últimas 24 horas son:
 
 $$
-f_k(t)=\frac{k}{\ln(1+kT)\left[1+k(T-t)\right]},
+f_k(t)=\frac{k}{\ln(1+kT)[1+k(T-t)]},
 \qquad
 \int_{T-24}^{T}f_k(t)\,dt=\frac{\ln(1+24k)}{\ln(1+kT)}
 $$

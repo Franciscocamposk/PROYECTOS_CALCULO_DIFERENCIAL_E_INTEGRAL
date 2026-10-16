@@ -29,13 +29,13 @@ $$
 La distribución de Weibull, la potencia media y el escalamiento con la altura son:
 
 $$
-f(v)=\frac{k}{c}\left(\frac{v}{c}\right)^{k-1}e^{-(v/c)^k},
+f(v)=\frac{k}{c}(v/c)^{k-1}e^{-(v/c)^k},
 \qquad
 \overline{P}=\int_0^{\infty}P(v)f(v)\,dv
 $$
 
 $$
-v(H)=v(H_0)\left(\frac{H}{H_0}\right)^\alpha
+v(H)=v(H_0)(H/H_0)^\alpha
 $$
 
 La energía anual y el valor presente neto de la repotenciación son:
@@ -45,7 +45,7 @@ E_{\mathrm{anual}}=8760N(1-L)\overline{P}
 $$
 
 $$
-VPN=-I+\left(\Delta E_{\mathrm{anual}}p-\Delta M\right)\frac{1-(1+r)^{-n}}{r}
+VPN=-I+(\Delta E_{\mathrm{anual}}p-\Delta M)\frac{1-(1+r)^{-n}}{r}
 $$
 
 ## Archivos

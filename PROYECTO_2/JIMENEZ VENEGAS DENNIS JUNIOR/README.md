@@ -19,11 +19,11 @@ Cuantificar el estrés térmico acumulado mediante integración, comparar sitios
 El estrés térmico positivo y las semanas-grado de calentamiento se modelan mediante:
 
 $$
-HS(t)=\max\left\{0,SST(t)-MMM\right\}
+HS(t)=\max\{0,SST(t)-MMM\}
 $$
 
 $$
-DHW(t)=\int_{t-12}^{t}HS(u)\,\mathbf{1}\left[HS(u)\geq 1\right]du
+DHW(t)=\int_{t-12}^{t}HS(u)\,\mathbf{1}[HS(u)\geq 1]du
 $$
 
 La supervivencia esperada de los fragmentos trasplantados se estima como:

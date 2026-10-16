@@ -31,7 +31,7 @@ La tasa de sismos, la pérdida anual esperada y el valor presente neto del refor
 $$
 \lambda(m)=\lambda_3\,10^{-b(m-3)},
 \qquad
-PAE=V_R\int_5^8D(m)\left[-\lambda'(m)\right]dm
+PAE=V_R\int_5^8D(m)[-\lambda'(m)]\,dm
 $$
 
 $$

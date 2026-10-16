@@ -27,7 +27,7 @@ La masa emitida y la concentración estimada en el mirador se calculan como:
 $$
 M(a,b)=\int_a^b\Phi(t)\,dt,
 \qquad
-X(t)=\frac{\Phi(t)}{u(t)}\max\left\{0,\cos\left(\theta(t)-\theta_m\right)\right\}
+X(t)=\frac{\Phi(t)}{u(t)}\max\{0,\cos(\theta(t)-\theta_m)\}
 $$
 
 $$

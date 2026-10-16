@@ -29,11 +29,11 @@ $$
 Para un intervalo truncado y para la temporada completa:
 
 $$
-\int_{-T}^{T}p^2(t)\,dt=\frac{2S(v)}{dv}\arctan\left(\frac{vT}{d}\right)
+\int_{-T}^{T}p^2(t)\,dt=\frac{2S(v)}{dv}\arctan(vT/d)
 $$
 
 $$
-S(v)=S_0\left(\frac{v}{v_0}\right)^n,
+S(v)=S_0(v/v_0)^n,
 \qquad
 E_{\mathrm{temp}}=\sum_k\frac{\pi S(v_k)}{d_kv_k}
 $$

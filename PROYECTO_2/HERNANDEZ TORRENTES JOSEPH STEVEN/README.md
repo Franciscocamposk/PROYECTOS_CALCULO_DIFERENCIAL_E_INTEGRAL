@@ -29,11 +29,11 @@ $$
 La potencia generada por el convertidor y la energía almacenada en la batería se modelan como:
 
 $$
-P_g=\min\left\{P_{\mathrm{nom}},\varepsilon wJ\right\}
+P_g=\min\{P_{\mathrm{nom}},\varepsilon wJ\}
 $$
 
 $$
-B(t)=\min\left\{B_{\max},\max\left\{0,B_0+\int_0^t\left[P_g(u)-P_c\right]du\right\}\right\}
+B(t)=\min\{B_{\max},\max\{0,B_0+\int_0^t[P_g(u)-P_c]du\}\}
 $$
 
 Se elige la combinación de menor costo que mantiene la boya operativa al menos el 99\% del tiempo.

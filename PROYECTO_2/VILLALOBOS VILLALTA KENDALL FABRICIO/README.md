@@ -19,7 +19,7 @@ Modelar los efectos de la cafeína mediante integración, comparar bebidas y hor
 La concentración de cafeína después de una toma se modela mediante absorción y eliminación:
 
 $$
-C(t)=\frac{Dk_a}{V(k_a-k)}\left(e^{-kt}-e^{-k_at}\right)
+C(t)=\frac{Dk_a}{V(k_a-k)}(e^{-kt}-e^{-k_at})
 $$
 
 El área bajo la curva y la concentración de un plan con varias tomas son:
@@ -33,7 +33,7 @@ $$
 Las horas con efecto durante la jornada se calculan como:
 
 $$
-H_{\mathrm{ef}}=\int_8^{20}\mathbf{1}\left[C_{\mathrm{plan}}(t)\geq c_{\mathrm{ef}}\right]dt
+H_{\mathrm{ef}}=\int_8^{20}\mathbf{1}[C_{\mathrm{plan}}(t)\geq c_{\mathrm{ef}}]dt
 $$
 
 Se elige el plan con más horas de atención, respetando el umbral de sueño y el máximo diario.
