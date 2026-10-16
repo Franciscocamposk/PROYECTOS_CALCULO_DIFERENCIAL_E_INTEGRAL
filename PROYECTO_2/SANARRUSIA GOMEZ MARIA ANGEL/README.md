@@ -16,16 +16,24 @@ Analizar la exposición acumulada a los gases mediante integración, comparar re
 
 ## Modelo matemático
 
-La exposición acumulada a los gases se modela mediante:
+El flujo de dióxido de azufre se obtiene integrando el perfil de la pluma y multiplicándolo por el viento:
 
 $$
-X(a,b)=\int_a^b c(t)\,dt
+\Phi(t)=u(t)\,\kappa\int_{-L}^{L}c(x,t)\,dx
 $$
 
-La regla de cierre seleccionada minimiza la exposición respetando las restricciones operativas:
+La masa emitida y la concentración estimada en el mirador se calculan como:
 
 $$
-x^*=\mathrm{arg\,min}_{x\in\mathcal{D}}X(x)
+M(a,b)=\int_a^b\Phi(t)\,dt,
+\qquad
+X(t)=\frac{\Phi(t)}{u(t)}\max\left\{0,\cos\left(\theta(t)-\theta_m\right)\right\}
+$$
+
+$$
+\widehat{C}_m(t)=\beta X(t),
+\qquad
+\beta=\frac{\int C_m\,dt}{\int X\,dt}
 $$
 
 ## Archivos

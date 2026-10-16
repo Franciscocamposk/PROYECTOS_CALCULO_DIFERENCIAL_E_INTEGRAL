@@ -16,16 +16,20 @@ Cuantificar el estrés térmico acumulado mediante integración, comparar sitios
 
 ## Modelo matemático
 
-La exposición térmica acumulada en un sitio se expresa como:
+El estrés térmico positivo y las semanas-grado de calentamiento se modelan mediante:
 
 $$
-E(a,b)=\int_a^b e(t)\,dt
+HS(t)=\max\left\{0,SST(t)-MMM\right\}
 $$
 
-El sitio recomendado maximiza el beneficio esperado de la restauración:
+$$
+DHW(t)=\int_{t-12}^{t}HS(u)\,\mathbf{1}\left[HS(u)\geq 1\right]du
+$$
+
+La supervivencia esperada de los fragmentos trasplantados se estima como:
 
 $$
-x^*=\mathrm{arg\,max}_{x\in\mathcal{D}}B(x)
+S=S_0e^{-\kappa\,\overline{DHW}_{\max}}
 $$
 
 ## Archivos

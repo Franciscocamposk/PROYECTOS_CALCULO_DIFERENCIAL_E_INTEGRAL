@@ -16,17 +16,21 @@ Analizar la somnolencia durante el recorrido mediante un modelo de integración 
 
 ## Modelo matemático
 
-La exposición acumulada a la somnolencia durante el recorrido se modela como:
+La potencia de cada banda del espectro EEG se calcula como el área bajo la curva:
 
 $$
-S(a,b)=\int_a^b s(t)\,dt
+P_{\mathrm{banda}}=\int_{f_1}^{f_2}S(f)\,df
 $$
 
-La alarma se activa cuando el índice alcanza el umbral $u$:
+El índice de somnolencia y el área bajo la curva ROC se definen mediante:
 
 $$
-s(t)\geq u
+I=\frac{P_{\theta}+P_{\alpha}}{P_{\beta}},
+\qquad
+AUC_{\mathrm{ROC}}=\int_0^1 TPR\,d(FPR)
 $$
+
+El umbral recomendado $c$ debe alcanzar la sensibilidad mínima con el menor costo de falsas alarmas.
 
 ## Archivos
 

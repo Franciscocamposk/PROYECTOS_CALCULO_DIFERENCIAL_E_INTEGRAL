@@ -16,19 +16,27 @@ Estimar la energía acumulada de las olas mediante integración y comparar combi
 
 ## Modelo matemático
 
-La energía disponible en el intervalo $[a,b]$ se representa por:
+La varianza de la elevación del mar, la altura significativa y la potencia de las olas son:
 
 $$
-E(a,b)=\int_a^b p(t)\,dt
-$$
-
-La combinación seleccionada debe minimizar el costo y cumplir la disponibilidad requerida:
-
-$$
-x^*=\mathrm{arg\,min}_{x\in\mathcal{D}}C(x),
+\sigma^2=\frac{1}{T}\int_0^T\eta(t)^2\,dt,
 \qquad
-\mathrm{disponibilidad}(x)\geq 0.99
+H_s=4\sigma,
+\qquad
+J=\frac{\rho g^2}{64\pi}H_s^2T_e
 $$
+
+La potencia generada por el convertidor y la energía almacenada en la batería se modelan como:
+
+$$
+P_g=\min\left\{P_{\mathrm{nom}},\varepsilon wJ\right\}
+$$
+
+$$
+B(t)=\min\left\{B_{\max},\max\left\{0,B_0+\int_0^t\left[P_g(u)-P_c\right]du\right\}\right\}
+$$
+
+Se elige la combinación de menor costo que mantiene la boya operativa al menos el 99\% del tiempo.
 
 ## Archivos
 

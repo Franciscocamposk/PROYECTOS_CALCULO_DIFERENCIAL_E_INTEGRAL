@@ -16,17 +16,29 @@ Analizar la energía sonora acumulada mediante integración, comparar medidas de
 
 ## Modelo matemático
 
-La energía sonora recibida durante un intervalo se representa por:
+La presión acústica al cuadrado y la energía sonora de un paso se modelan como:
 
 $$
-E(a,b)=\int_a^b I(t)\,dt
+p^2(t)=\frac{S(v)}{d^2+v^2t^2}
 $$
 
-La medida recomendada minimiza el costo y reduce la energía sonora recibida:
+$$
+E=\int_{-\infty}^{\infty}p^2(t)\,dt=\frac{\pi S(v)}{dv}
+$$
+
+Para un intervalo truncado y para la temporada completa:
 
 $$
-x^*=\mathrm{arg\,min}_{x\in\mathcal{D}}C(x)
+\int_{-T}^{T}p^2(t)\,dt=\frac{2S(v)}{dv}\arctan\left(\frac{vT}{d}\right)
 $$
+
+$$
+S(v)=S_0\left(\frac{v}{v_0}\right)^n,
+\qquad
+E_{\mathrm{temp}}=\sum_k\frac{\pi S(v_k)}{d_kv_k}
+$$
+
+La medida elegida cumple la reducción mínima de energía con el menor costo de temporada.
 
 ## Archivos
 

@@ -16,16 +16,26 @@ Aplicar integración al análisis de la amenaza sísmica, comparar opciones de r
 
 ## Modelo matemático
 
-La amenaza acumulada durante el intervalo de análisis se representa por:
+La velocidad y el desplazamiento se obtienen integrando la aceleración, y la intensidad de Arias es:
 
 $$
-H(a,b)=\int_a^b h(t)\,dt
+v(t)=\int_0^t a(u)\,du,
+\qquad
+x(t)=\int_0^t v(u)\,du,
+\qquad
+I_A=\frac{\pi}{2g}\int_0^T a(t)^2\,dt
 $$
 
-La opción de reforzamiento se compara mediante una función de pérdida esperada $L(x)$:
+La tasa de sismos, la pérdida anual esperada y el valor presente neto del reforzamiento son:
 
 $$
-x^*=\mathrm{arg\,min}_{x\in\mathcal{D}}L(x)
+\lambda(m)=\lambda_3\,10^{-b(m-3)},
+\qquad
+PAE=V_R\int_5^8D(m)\left[-\lambda'(m)\right]dm
+$$
+
+$$
+VPN=-C+\int_0^H\Delta PAE\,e^{-rt}\,dt
 $$
 
 ## Archivos

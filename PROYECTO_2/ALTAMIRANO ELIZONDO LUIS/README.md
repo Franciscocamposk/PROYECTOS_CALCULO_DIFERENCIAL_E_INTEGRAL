@@ -16,17 +16,23 @@ Modelar el comportamiento de las entregas, aplicar integración a los datos sumi
 
 ## Modelo matemático
 
-La cantidad acumulada de entregas o actividad durante $[a,b]$ se expresa como:
+La proporción acumulada de entregas y el índice de procrastinación se definen mediante:
 
 $$
-A(a,b)=\int_a^b r(t)\,dt
+F(t)=\int_0^t f(u)\,du,
+\qquad
+IP=\frac{\bar{t}}{T}=\frac{1}{T}\int_0^T\left[1-F(t)\right]dt
 $$
 
-donde $r(t)$ representa la tasa modelada. La estrategia se elige mediante:
+El modelo hiperbólico de la densidad de entregas y su proporción en las últimas 24 horas son:
 
 $$
-x^*=\mathrm{arg\,max}_{x\in\mathcal{D}}\;J(x)
+f_k(t)=\frac{k}{\ln(1+kT)\left[1+k(T-t)\right]},
+\qquad
+\int_{T-24}^{T}f_k(t)\,dt=\frac{\ln(1+24k)}{\ln(1+kT)}
 $$
+
+Se recomienda la estrategia con mayor nota media, considerando también la carga docente.
 
 ## Archivos
 

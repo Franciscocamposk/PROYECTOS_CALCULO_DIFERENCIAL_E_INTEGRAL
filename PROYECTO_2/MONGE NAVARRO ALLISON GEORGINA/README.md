@@ -16,16 +16,26 @@ Modelar la migración mediante integración, analizar los periodos de mayor acti
 
 ## Modelo matemático
 
-La cantidad esperada de aves observadas durante un intervalo se representa por:
+El total diario, el total de la temporada, la fracción acumulada y la fecha media se calculan como:
 
 $$
-N(a,b)=\int_a^b n(t)\,dt
+N_d=\int_{h_i}^{h_f}r_d(x)\,dx,
+\qquad
+N=\int_{t_0}^{t_1}n(t)\,dt
 $$
 
-El periodo recomendado maximiza el número esperado de registros:
+$$
+F(t)=\frac{1}{N}\int_{t_0}^{t}n(u)\,du,
+\qquad
+\bar{t}=\frac{1}{N}\int_{t_0}^{t_1}t\,n(t)\,dt
+$$
+
+La campaña de $L$ días que inicia en $a$ captura:
 
 $$
-(a^*,b^*)=\mathrm{arg\,max}_{(a,b)\in\mathcal{D}}N(a,b)
+G(a)=\int_a^{a+L}n(t)\,dt,
+\qquad
+G'(a)=n(a+L)-n(a)=0
 $$
 
 ## Archivos

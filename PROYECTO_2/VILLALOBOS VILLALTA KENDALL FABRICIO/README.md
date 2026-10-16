@@ -16,19 +16,27 @@ Modelar los efectos de la cafeína mediante integración, comparar bebidas y hor
 
 ## Modelo matemático
 
-Las horas acumuladas de atención durante el periodo de estudio se representan por:
+La concentración de cafeína después de una toma se modela mediante absorción y eliminación:
 
 $$
-A(a,b)=\int_a^b a(t)\,dt
+C(t)=\frac{Dk_a}{V(k_a-k)}\left(e^{-kt}-e^{-k_at}\right)
 $$
 
-La estrategia recomendada maximiza la atención respetando la restricción sobre el sueño:
+El área bajo la curva y la concentración de un plan con varias tomas son:
 
 $$
-x^*=\mathrm{arg\,max}_{x\in\mathcal{D}}A(x),
+AUC=\int_0^{\infty}C(t)\,dt=\frac{D}{Vk},
 \qquad
-S(x)\geq S_{\min}
+C_{\mathrm{plan}}(t)=\sum_j C(t-t_j;D_j)
 $$
+
+Las horas con efecto durante la jornada se calculan como:
+
+$$
+H_{\mathrm{ef}}=\int_8^{20}\mathbf{1}\left[C_{\mathrm{plan}}(t)\geq c_{\mathrm{ef}}\right]dt
+$$
+
+Se elige el plan con más horas de atención, respetando el umbral de sueño y el máximo diario.
 
 ## Archivos
 
