@@ -16,6 +16,7 @@ El Excel original se utiliza únicamente para lectura.
 """
 
 from pathlib import Path
+from io import BytesIO
 
 import altair as alt
 import pandas as pd
@@ -50,18 +51,43 @@ st.set_page_config(
 # CARGA Y PREPARACIÓN DE DATOS
 # ============================================================
 
-@st.cache_data
-def cargar_proyecto():
-    """
-    Lee todas las hojas del Excel original.
 
-    Prepara los registros del oleaje sin modificar
-    el archivo proporcionado por el profesor.
+@st.cache_data
+def cargar_proyecto(archivo_excel: bytes | None = None):
     """
-    hojas = pd.read_excel(
-        RUTA_EXCEL,
-        sheet_name=None,
-    )
+    Carga el Excel original o uno proporcionado por el usuario.
+
+    Parámetros:
+        archivo_excel: contenido binario de un Excel opcional.
+
+    Retorna:
+        registros procesados, convertidores y baterías.
+
+    No modifica ningún archivo de entrada.
+    """
+    if archivo_excel is None:
+        origen = RUTA_EXCEL
+    else:
+        origen = BytesIO(archivo_excel)
+
+    hojas = pd.read_excel(origen, sheet_name=None)
+
+    hojas_obligatorias = {
+        "Registros_oleaje",
+        "Opciones_convertidor",
+        "Opciones_bateria",
+        "Parametros",
+        "Muestra_elevacion",
+        "Diccionario",
+    }
+
+    faltantes = hojas_obligatorias - set(hojas)
+
+    if faltantes:
+        raise ValueError(
+            "Faltan hojas obligatorias: "
+            + ", ".join(sorted(faltantes))
+        )
 
     registros = preparar_energia_oleaje(
         hojas["Registros_oleaje"]
@@ -72,12 +98,6 @@ def cargar_proyecto():
         hojas["Opciones_convertidor"],
         hojas["Opciones_bateria"],
     )
-
-
-@st.cache_data
-def generar_csv(datos: pd.DataFrame) -> bytes:
-    """Convierte un DataFrame a CSV codificado en UTF-8."""
-    return datos.to_csv(index=False).encode("utf-8-sig")
 
 
 # ============================================================
@@ -103,14 +123,50 @@ st.caption(
 # LEER DATOS
 # ============================================================
 
-try:
-    registros, convertidores, baterias = cargar_proyecto()
 
-except (FileNotFoundError, ValueError, KeyError) as error:
+# ============================================================
+# SELECCIÓN DE LA FUENTE DE DATOS
+# ============================================================
+
+st.subheader("Fuente de datos")
+
+archivo_subido = st.file_uploader(
+    "Cargar otro archivo Excel con la misma estructura",
+    type=["xlsx"],
+    help=(
+        "Si no se selecciona un archivo, se utilizará "
+        "automáticamente el Excel original del Proyecto 8."
+    ),
+)
+
+if archivo_subido is None:
+    contenido_excel = None
+    st.caption(
+        "Fuente activa: P08_C-04_HERNANDEZ.xlsx"
+    )
+else:
+    contenido_excel = archivo_subido.getvalue()
+    st.caption(
+        f"Fuente activa: {archivo_subido.name}"
+    )
+
+try:
+    registros, convertidores, baterias = cargar_proyecto(
+        contenido_excel
+    )
+
+except (
+    FileNotFoundError,
+    ValueError,
+    KeyError,
+    TypeError,
+    ImportError,
+) as error:
     st.error(
-        f"No fue posible cargar los datos originales: {error}"
+        f"No fue posible cargar los datos: {error}"
     )
     st.stop()
+
 
 
 # ============================================================
@@ -459,6 +515,270 @@ st.caption(
 # ============================================================
 # GRÁFICO DE ALMACENAMIENTO
 # ============================================================
+
+# ============================================================
+# INTEGRAL DE POTENCIA: ENERGÍA GENERADA
+# ============================================================
+
+st.subheader("Integral de potencia y energía acumulada")
+
+st.write(
+    "La energía generada corresponde al área bajo "
+    "la curva de potencia eléctrica respecto al tiempo."
+)
+
+st.latex(
+    r"E_g = \int_{t_0}^{t_f} P_g(t)\,dt"
+)
+
+# Cada registro representa un intervalo de una hora.
+dt_horas = 1.0
+
+# Integración discreta de la potencia horaria.
+energia_total_wh = (
+    simulacion["potencia_generada_w"].sum()
+    * dt_horas
+)
+
+energia_total_kwh = energia_total_wh / 1000.0
+
+# Energía requerida durante todas las horas analizadas.
+energia_requerida_kwh = (
+    float(consumo_w)
+    * len(simulacion)
+    * dt_horas
+    / 1000.0
+)
+
+c1, c2 = st.columns(2)
+
+c1.metric(
+    "Energía eléctrica generada",
+    f"{energia_total_kwh:,.2f} kWh",
+)
+
+c2.metric(
+    "Energía requerida por la estación",
+    f"{energia_requerida_kwh:,.2f} kWh",
+)
+
+# Preparar datos para mostrar el área bajo P(t).
+datos_integral = simulacion[
+    ["fecha_hora", "potencia_generada_w"]
+].copy()
+
+# Área sombreada que representa la integral.
+area_potencia = (
+    alt.Chart(datos_integral)
+    .mark_area(
+        color="#4DA3E2",
+        opacity=0.30,
+    )
+    .encode(
+        x=alt.X(
+            "fecha_hora:T",
+            title="Tiempo",
+        ),
+        y=alt.Y(
+            "potencia_generada_w:Q",
+            title="Potencia eléctrica (W)",
+        ),
+        tooltip=[
+            alt.Tooltip(
+                "fecha_hora:T",
+                title="Fecha",
+            ),
+            alt.Tooltip(
+                "potencia_generada_w:Q",
+                title="Potencia (W)",
+                format=".2f",
+            ),
+        ],
+    )
+)
+
+linea_potencia = (
+    alt.Chart(datos_integral)
+    .mark_line(
+        color="#1261A0",
+        strokeWidth=1.5,
+    )
+    .encode(
+        x="fecha_hora:T",
+        y="potencia_generada_w:Q",
+    )
+)
+
+grafico_integral = (
+    (area_potencia + linea_potencia)
+    .properties(
+        height=350,
+        title="Área bajo la curva de generación eléctrica",
+    )
+    .interactive()
+)
+
+st.altair_chart(
+    grafico_integral,
+    width="stretch",
+)
+
+st.caption(
+    "El área sombreada representa la energía eléctrica "
+    "generada. La integración discreta utiliza intervalos "
+    "de una hora y supone potencia constante dentro "
+    "de cada intervalo."
+)
+
+
+# ============================================================
+# ENERGÍA ACUMULADA Y BALANCE ENERGÉTICO
+# ============================================================
+
+st.subheader("Energía eléctrica acumulada")
+
+st.write(
+    "Este gráfico compara la energía total generada "
+    "y la energía requerida por la estación a lo largo "
+    "de las 960 horas."
+)
+
+st.latex(
+    r"E(t)=\int_{t_0}^{t}P(u)\,du"
+)
+
+# Cada observación representa una hora de generación.
+dt_horas = 1.0
+
+datos_acumulados = simulacion[
+    ["fecha_hora", "potencia_generada_w"]
+].copy()
+
+# Integral acumulada usando intervalos horarios.
+datos_acumulados["generada_kwh"] = (
+    datos_acumulados["potencia_generada_w"]
+    .cumsum()
+    * dt_horas
+    / 1000.0
+)
+
+# Consumo eléctrico acumulado.
+datos_acumulados["requerida_kwh"] = (
+    pd.Series(
+        range(1, len(datos_acumulados) + 1),
+        index=datos_acumulados.index,
+        dtype=float,
+    )
+    * float(consumo_w)
+    * dt_horas
+    / 1000.0
+)
+
+# Convertir a formato apropiado para Altair.
+datos_grafico_acumulado = datos_acumulados.melt(
+    id_vars="fecha_hora",
+    value_vars=[
+        "generada_kwh",
+        "requerida_kwh",
+    ],
+    var_name="tipo_energia",
+    value_name="energia_kwh",
+)
+
+grafico_acumulado = (
+    alt.Chart(datos_grafico_acumulado)
+    .mark_line(strokeWidth=2)
+    .encode(
+        x=alt.X(
+            "fecha_hora:T",
+            title="Fecha",
+        ),
+        y=alt.Y(
+            "energia_kwh:Q",
+            title="Energía acumulada (kWh)",
+        ),
+        color=alt.Color(
+            "tipo_energia:N",
+            title="Tipo de energía",
+            scale=alt.Scale(
+                domain=[
+                    "generada_kwh",
+                    "requerida_kwh",
+                ],
+                range=[
+                    "#1677C8",
+                    "#E67E22",
+                ],
+            ),
+        ),
+        tooltip=[
+            alt.Tooltip(
+                "fecha_hora:T",
+                title="Fecha",
+            ),
+            alt.Tooltip(
+                "tipo_energia:N",
+                title="Serie",
+            ),
+            alt.Tooltip(
+                "energia_kwh:Q",
+                title="Energía (kWh)",
+                format=".2f",
+            ),
+        ],
+    )
+    .properties(
+        height=350,
+        title="Generación y consumo acumulados",
+    )
+    .interactive()
+)
+
+st.altair_chart(
+    grafico_acumulado,
+    width="stretch",
+)
+
+# Valores finales.
+generada_final = float(
+    datos_acumulados["generada_kwh"].iloc[-1]
+)
+
+requerida_final = float(
+    datos_acumulados["requerida_kwh"].iloc[-1]
+)
+
+diferencia_energia = (
+    generada_final - requerida_final
+)
+
+c1, c2, c3 = st.columns(3)
+
+c1.metric(
+    "Generación acumulada",
+    f"{generada_final:,.2f} kWh",
+)
+
+c2.metric(
+    "Demanda acumulada",
+    f"{requerida_final:,.2f} kWh",
+)
+
+c3.metric(
+    "Diferencia generación - demanda",
+    f"{diferencia_energia:+,.2f} kWh",
+)
+
+st.caption(
+    "La diferencia acumulada no representa directamente "
+    "la energía disponible en la batería. Parte de la "
+    "generación puede desperdiciarse al alcanzar su "
+    "capacidad máxima. La disponibilidad real del modelo "
+    "se determina con la simulación horaria."
+)
+
+
+
 
 st.subheader("Energía almacenada en la batería")
 
