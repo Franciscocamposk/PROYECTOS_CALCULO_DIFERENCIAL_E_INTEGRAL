@@ -40,6 +40,20 @@ RUTA_EXCEL = (
     / "P08_C-04_HERNANDEZ.xlsx"
 )
 
+@st.cache_data
+def generar_csv(datos: pd.DataFrame) -> bytes:
+    """
+    Convierte los resultados a un archivo CSV.
+
+    Entrada: DataFrame con los resultados.
+    Salida: contenido CSV en bytes, codificado en UTF-8.
+    """
+    return datos.to_csv(
+        index=False
+    ).encode("utf-8-sig")
+
+
+
 st.set_page_config(
     page_title="Proyecto 8 | Energía de las olas",
     page_icon="🌊",
