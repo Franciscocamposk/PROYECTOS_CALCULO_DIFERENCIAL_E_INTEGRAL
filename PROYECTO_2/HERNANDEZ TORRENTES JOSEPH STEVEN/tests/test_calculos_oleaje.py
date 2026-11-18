@@ -64,3 +64,38 @@ def test_rechazar_columnas_faltantes():
 
     with pytest.raises(ValueError):
         calcular_por_registro(muestras)
+
+
+def test_metodo_hibrido_con_intervalos_impares():
+    """Simpson en los primeros intervalos y trapecio en el último."""
+    resultado = calcular_altura_significativa(
+        [0, 1, 2, 3],
+        [2, 2, 2, 2],
+        metodo="hibrido",
+    )
+
+    assert resultado["varianza_m2"] == pytest.approx(4)
+    assert resultado["altura_significativa_m"] == pytest.approx(8)
+
+
+def test_metodo_hibrido_con_intervalos_pares():
+    """Si hay intervalos pares, se aplica Simpson directamente."""
+    resultado = calcular_altura_significativa(
+        [0, 1, 2],
+        [2, 2, 2],
+        metodo="hibrido",
+    )
+
+    assert resultado["altura_significativa_m"] == pytest.approx(8)
+
+
+def test_metodo_hibrido_con_un_intervalo():
+    """Con solo un intervalo se utiliza trapecio."""
+    resultado = calcular_altura_significativa(
+        [0, 1],
+        [2, 2],
+        metodo="hibrido",
+    )
+
+    assert resultado["altura_significativa_m"] == pytest.approx(8)
+

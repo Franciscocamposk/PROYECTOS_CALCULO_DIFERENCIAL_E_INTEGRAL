@@ -50,9 +50,32 @@ def calcular_altura_significativa(tiempo_s, elevacion_m, metodo="trapecio"):
 
     if metodo == "trapecio":
         integral = trapecio_compuesto(tiempo, elevacion_cuadrada)
+
+        
     elif metodo == "simpson":
         integral = simpson_compuesto(tiempo, elevacion_cuadrada)
+
+    elif metodo == "hibrido":
+        # Simpson requiere una cantidad par de subintervalos.
+        # Si es impar, aplicamos Simpson en todos excepto
+        # el último, que se integra mediante trapecio.
+        n = len(tiempo) - 1
+
+        if n % 2 == 0:
+            integral = simpson_compuesto(tiempo, elevacion_cuadrada)
+        elif n >= 3:
+            integral = (
+                simpson_compuesto(tiempo[:-1], elevacion_cuadrada[:-1])
+                + trapecio_compuesto(tiempo[-2:], elevacion_cuadrada[-2:])
+            )
+        else:
+            # Con un solo subintervalo solo procede trapecio.
+            integral = trapecio_compuesto(tiempo, elevacion_cuadrada)
+
     else:
+
+
+
         raise ValueError("Método desconocido. Use 'trapecio' o 'simpson'.")
 
     varianza = integral / duracion
