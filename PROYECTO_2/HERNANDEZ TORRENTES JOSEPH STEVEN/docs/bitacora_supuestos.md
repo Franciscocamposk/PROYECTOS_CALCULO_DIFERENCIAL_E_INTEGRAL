@@ -202,3 +202,119 @@ en las siguientes etapas del proyecto.
 Este cierre corresponde a la implementación básica
 y no implica que todas las decisiones sobre la
 calidad de los datos sean definitivas.
+
+
+
+
+---
+
+## Decisiones del modelo energético
+
+### 1. Datos originales
+
+Se utilizan 960 registros horarios de oleaje y 400 mediciones
+de elevación, distribuidas en dos muestras.
+
+El Excel original permanece sin modificaciones.
+
+### 2. Valores faltantes
+
+Se identificaron cuatro alturas significativas faltantes.
+
+Se aplicó interpolación lineal únicamente sobre una copia
+de los registros, conservando la marca `altura_estimada`.
+
+Los valores atípicos detectados no fueron reemplazados
+automáticamente.
+
+### 3. Integración numérica
+
+Se implementaron directamente los métodos de trapecio
+compuesto y Simpson 1/3 compuesto.
+
+Cada muestra contiene 200 mediciones, equivalentes
+a 199 subintervalos.
+
+Para comparar los métodos se utilizó Simpson sobre los
+primeros 198 subintervalos y trapecio sobre el último.
+
+### 4. Modelo físico
+
+Se utiliza la ecuación:
+
+J = (rho * g² / (64*pi)) * Hs² * Te
+
+Donde Te = 0.9 * Tp.
+
+Los parámetros rho = 1025 kg/m³ y g = 9.81 m/s²
+provienen del Excel proporcionado.
+
+### 5. Convertidores
+
+La potencia eléctrica se calcula mediante:
+
+Pg = min(Pnom, eficiencia * ancho * J)
+
+Se evalúan los convertidores WEC-50, WEC-100 y WEC-150.
+
+### 6. Baterías
+
+Se evalúan las baterías B2, B5, B10 y B20.
+
+Supuestos implementados:
+
+- Consumo constante de 300 W.
+- Intervalos de una hora.
+- Batería inicialmente cargada al 100 %.
+- Eficiencia de carga y descarga del 100 %.
+- Sin degradación de la batería.
+- Sin pérdidas eléctricas adicionales.
+
+La eficiencia ideal es una simplificación del modelo,
+no una característica física confirmada de las baterías.
+
+### 7. Escenario de oleaje reducido
+
+Se disminuye la altura significativa un 20 %.
+
+Se mantiene constante el período pico.
+
+Como el flujo energético depende de Hs², se utiliza:
+
+J_reducido = 0.64 * J_original.
+
+### 8. Criterio de selección
+
+Se requiere una disponibilidad mínima del 99 %
+de las 960 horas en ambos escenarios.
+
+Una hora se considera cubierta cuando se suministra
+la totalidad de los 300 Wh requeridos.
+
+Se selecciona la alternativa de menor costo que cumpla
+ambos escenarios.
+
+### 9. Resultado obtenido
+
+Convertidor: WEC-150.
+Batería: B20.
+Costo total: ₡15,990,000.
+
+Disponibilidad normal: 100 %.
+Disponibilidad con oleaje reducido: 100 %.
+
+La simulación no registró horas sin cobertura
+para esta combinación.
+
+### 10. Limitaciones
+
+Los resultados corresponden a una simulación académica.
+
+No se modelan pérdidas por temperatura, envejecimiento,
+autodescarga, mantenimiento o fallas de equipos.
+
+Tampoco se consideran condiciones de oleaje diferentes
+de las registradas ni incertidumbres adicionales.
+
+La recomendación debe interpretarse dentro de estos
+supuestos y no como garantía de operación real.
