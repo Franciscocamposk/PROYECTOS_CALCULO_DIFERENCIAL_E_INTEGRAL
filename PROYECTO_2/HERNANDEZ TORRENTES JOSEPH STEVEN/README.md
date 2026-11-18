@@ -132,3 +132,29 @@ Ejecutar la aplicación web:
 - P08_C-04_HERNANDEZ.xlsx: datos originales del profesor.
 
 El archivo Excel original se utiliza únicamente para lectura.
+
+
+
+---
+
+## Aplicación web publicada
+
+La aplicación del Proyecto 8 está disponible públicamente en Streamlit Community Cloud.
+
+**Enlace de acceso:**
+
+https://proyecto1calculodiferencialeintegral-tuiv3dzxaabfnxnzsg62sb.streamlit.app/
+
+### Funcionalidades
+
+- Comparación de 12 combinaciones de convertidores y baterías.
+- Evaluación de tres escenarios de oleaje: normal, -10 % y -20 %.
+- Modificación interactiva del consumo eléctrico.
+- Carga de archivos Excel con la estructura requerida.
+- Gráficos de generación, integración y almacenamiento.
+- Descarga de resultados en formato CSV.
+- Identificación de la combinación de menor costo.
+
+### Recomendación principal
+
+**WEC-150 + B20**, con un costo de **₡15,990,000** y disponibilidad simulada del **100 %** en los tres escenarios, bajo los supuestos del modelo.
