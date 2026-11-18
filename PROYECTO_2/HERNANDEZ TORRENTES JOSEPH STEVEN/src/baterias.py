@@ -135,3 +135,92 @@ def resumir_simulacion(simulacion: pd.DataFrame) -> dict:
         ),
         "cumple_99_pct": cubiertas / total >= 0.99,
     }
+
+
+
+class Bateria:
+    """Batería con capacidad y energía almacenada en Wh."""
+
+    def __init__(
+        self,
+        capacidad_kwh: float,
+        carga_inicial: float = 1.0,
+    ):
+        """Inicializa la batería; carga_inicial es una fracción de 0 a 1."""
+        valores = [capacidad_kwh, carga_inicial]
+        if not all(np.isfinite(v) for v in valores):
+            raise ValueError("Los parámetros deben ser finitos.")
+        if capacidad_kwh <= 0:
+            raise ValueError("La capacidad debe ser positiva.")
+        if not 0 <= carga_inicial <= 1:
+            raise ValueError("La carga inicial debe estar entre 0 y 1.")
+
+        self.capacidad_wh = capacidad_kwh * 1000.0
+        self.energia_wh = self.capacidad_wh * carga_inicial
+
+    def simular(
+        self,
+        Pg,
+        Pc: float,
+        dt: float = 1.0,
+    ) -> pd.DataFrame:
+        """
+        Simula generación, consumo y almacenamiento.
+
+        Pg: secuencia de potencias generadas (W).
+        Pc: potencia consumida constante (W).
+        dt: duración de cada intervalo (horas).
+
+        Devuelve un DataFrame con balances energéticos en Wh.
+        Conserva el estado final de la batería.
+        """
+        potencias = np.asarray(Pg, dtype=float)
+
+        if potencias.ndim != 1 or potencias.size == 0:
+            raise ValueError("Pg debe ser una secuencia no vacía.")
+        if not np.isfinite(potencias).all() or (potencias < 0).any():
+            raise ValueError("Pg debe contener potencias finitas no negativas.")
+        if not np.isfinite(Pc) or Pc < 0:
+            raise ValueError("Pc debe ser finita y no negativa.")
+        if not np.isfinite(dt) or dt <= 0:
+            raise ValueError("dt debe ser positivo y finito.")
+
+        resultados = []
+
+        for potencia in potencias:
+            inicial = self.energia_wh
+            generada = float(potencia) * dt
+            demanda = Pc * dt
+
+            # La generación alimenta primero el consumo.
+            directa = min(generada, demanda)
+            faltante = demanda - directa
+
+            # La batería cubre lo que pueda del faltante.
+            descarga = min(self.energia_wh, faltante)
+            self.energia_wh -= descarga
+
+            servida = directa + descarga
+            no_atendida = max(0.0, demanda - servida)
+
+            # El excedente carga la batería hasta su capacidad.
+            excedente = generada - directa
+            carga = min(
+                excedente,
+                self.capacidad_wh - self.energia_wh,
+            )
+            self.energia_wh += carga
+            desperdiciada = max(0.0, excedente - carga)
+
+            resultados.append({
+                "energia_inicial_wh": inicial,
+                "energia_generada_wh": generada,
+                "energia_consumida_wh": demanda,
+                "energia_servida_wh": servida,
+                "energia_no_servida_wh": no_atendida,
+                "energia_vertida_wh": desperdiciada,
+                "energia_bateria_final_wh": self.energia_wh,
+                "hora_cubierta": no_atendida <= 1e-9,
+            })
+
+        return pd.DataFrame(resultados)

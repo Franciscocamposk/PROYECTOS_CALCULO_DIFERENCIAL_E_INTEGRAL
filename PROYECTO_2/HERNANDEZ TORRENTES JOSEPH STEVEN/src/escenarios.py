@@ -96,3 +96,81 @@ def seleccionar_menor_costo(comparacion: pd.DataFrame):
     return opciones.sort_values(
         "costo_total_colones"
     ).iloc[0]
+
+
+
+def comparar_tres_escenarios(
+    registros: pd.DataFrame,
+    convertidores: pd.DataFrame,
+    baterias: pd.DataFrame,
+    consumo_w: float = 300.0,
+) -> pd.DataFrame:
+    """
+    Evalúa 12 combinaciones bajo tres condiciones de oleaje.
+
+    Escenarios:
+        Normal: Hs original.
+        Moderado: Hs reducida un 10 %.
+        Adverso: Hs reducida un 20 %.
+
+    Retorna una tabla con costo, disponibilidad,
+    horas sin cobertura y cumplimiento del 99 %.
+    """
+
+    escenarios = {
+        "normal": 0.00,
+        "moderado": 0.10,
+        "adverso": 0.20,
+    }
+
+    resultado = None
+    claves = ["convertidor", "bateria"]
+
+    for nombre, reduccion in escenarios.items():
+        if reduccion == 0:
+            datos = registros.copy(deep=True)
+        else:
+            datos = reducir_oleaje(registros, reduccion)
+
+        evaluacion = evaluar_combinaciones(
+            datos,
+            convertidores,
+            baterias,
+            consumo_w,
+        )
+
+        columnas = claves + [
+            "disponibilidad_pct",
+            "horas_sin_cobertura",
+            "cumple_99_pct",
+        ]
+
+        if resultado is None:
+            columnas.append("costo_total_colones")
+
+        evaluacion = evaluacion[columnas].rename(
+            columns={
+                "disponibilidad_pct": f"disponibilidad_{nombre}_pct",
+                "horas_sin_cobertura": f"horas_sin_cobertura_{nombre}",
+                "cumple_99_pct": f"cumple_{nombre}",
+            }
+        )
+
+        if resultado is None:
+            resultado = evaluacion
+        else:
+            resultado = resultado.merge(
+                evaluacion,
+                on=claves,
+                validate="one_to_one",
+            )
+
+    resultado["cumple_tres"] = (
+        resultado["cumple_normal"]
+        & resultado["cumple_moderado"]
+        & resultado["cumple_adverso"]
+    )
+
+    return resultado.sort_values(
+        "costo_total_colones"
+    ).reset_index(drop=True)

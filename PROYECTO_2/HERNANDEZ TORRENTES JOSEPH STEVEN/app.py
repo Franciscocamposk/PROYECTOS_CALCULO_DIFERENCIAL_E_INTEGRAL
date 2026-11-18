@@ -4,33 +4,40 @@ Aplicación web del Proyecto 8.
 
 Energía de las olas para una boya frente a Pavones.
 
-Permite:
-- Comparar las 12 combinaciones.
-- Consultar escenarios de oleaje.
-- Visualizar generación eléctrica y almacenamiento.
-- Identificar la solución de menor costo que cumple 99 %.
+Funciones:
+- Comparar 12 combinaciones de convertidores y baterías.
+- Evaluar tres escenarios de oleaje.
+- Modificar el consumo eléctrico de la estación.
+- Visualizar potencia generada y almacenamiento.
+- Descargar resultados en formato CSV.
+- Recomendar la alternativa de menor costo que cumple el 99 %.
 
-Todos los cálculos utilizan los módulos del proyecto.
-El Excel original solo se lee; nunca se modifica.
+El Excel original se utiliza únicamente para lectura.
 """
 
 from pathlib import Path
 
+import altair as alt
 import pandas as pd
 import streamlit as st
-import altair as alt
 
 from src.procesamiento_oleaje import preparar_energia_oleaje
 from src.escenarios import (
-    comparar_escenarios,
+    comparar_tres_escenarios,
     reducir_oleaje,
-    seleccionar_menor_costo,
 )
 from src.convertidores import calcular_generacion_convertidor
 from src.baterias import simular_bateria, resumir_simulacion
 
 
-RUTA_EXCEL = Path(__file__).resolve().parent / "P08_C-04_HERNANDEZ.xlsx"
+# ============================================================
+# CONFIGURACIÓN GENERAL
+# ============================================================
+
+RUTA_EXCEL = (
+    Path(__file__).resolve().parent
+    / "P08_C-04_HERNANDEZ.xlsx"
+)
 
 st.set_page_config(
     page_title="Proyecto 8 | Energía de las olas",
@@ -39,10 +46,22 @@ st.set_page_config(
 )
 
 
+# ============================================================
+# CARGA Y PREPARACIÓN DE DATOS
+# ============================================================
+
 @st.cache_data
 def cargar_proyecto():
-    """Lee el Excel y prepara los registros una sola vez."""
-    hojas = pd.read_excel(RUTA_EXCEL, sheet_name=None)
+    """
+    Lee todas las hojas del Excel original.
+
+    Prepara los registros del oleaje sin modificar
+    el archivo proporcionado por el profesor.
+    """
+    hojas = pd.read_excel(
+        RUTA_EXCEL,
+        sheet_name=None,
+    )
 
     registros = preparar_energia_oleaje(
         hojas["Registros_oleaje"]
@@ -55,61 +74,148 @@ def cargar_proyecto():
     )
 
 
+@st.cache_data
+def generar_csv(datos: pd.DataFrame) -> bytes:
+    """Convierte un DataFrame a CSV codificado en UTF-8."""
+    return datos.to_csv(index=False).encode("utf-8-sig")
+
+
+# ============================================================
+# ENCABEZADO
+# ============================================================
+
 st.title("🌊 Energía de las olas frente a Pavones")
 
 st.write(
     "Proyecto 8 — Cálculo Diferencial e Integral. "
-    "Evaluación de convertidores y baterías para una boya marina."
+    "Evaluación energética y económica de convertidores "
+    "y baterías para una boya oceanográfica."
 )
 
 st.caption(
-    "Modelo horario de 960 registros. Consumo de 300 W, "
-    "batería inicialmente cargada al 100 % y eficiencia "
-    "ideal de almacenamiento."
+    "Simulación de 960 registros horarios. "
+    "Se considera una batería inicialmente cargada "
+    "al 100 % y una eficiencia ideal de almacenamiento."
 )
+
+
+# ============================================================
+# LEER DATOS
+# ============================================================
 
 try:
     registros, convertidores, baterias = cargar_proyecto()
+
 except (FileNotFoundError, ValueError, KeyError) as error:
-    st.error(f"No fue posible cargar los datos: {error}")
+    st.error(
+        f"No fue posible cargar los datos originales: {error}"
+    )
     st.stop()
 
 
-# Comparación en ambos escenarios
-comparacion = comparar_escenarios(
-    registros,
-    convertidores,
-    baterias,
-    consumo_w=300.0,
-    reduccion=0.20,
+# ============================================================
+# PARÁMETRO DE CONSUMO
+# ============================================================
+
+st.subheader("Configuración de la demanda eléctrica")
+
+consumo_w = st.slider(
+    "Consumo de la estación (W)",
+    min_value=100,
+    max_value=600,
+    value=300,
+    step=25,
+    help=(
+        "El consumo de referencia del proyecto es 300 W. "
+        "Modificarlo permite estudiar la sensibilidad "
+        "de la recomendación."
+    ),
 )
 
-mejor = seleccionar_menor_costo(comparacion)
+if consumo_w != 300:
+    st.info(
+        f"Se está evaluando un consumo alternativo de "
+        f"{consumo_w} W. El consumo original es 300 W."
+    )
 
 
-st.subheader("Sistema recomendado")
+# ============================================================
+# COMPARACIÓN DE LOS TRES ESCENARIOS
+# ============================================================
+
+st.subheader("Evaluación de alternativas")
+
+with st.spinner("Evaluando las 12 combinaciones..."):
+    comparacion = comparar_tres_escenarios(
+        registros,
+        convertidores,
+        baterias,
+        consumo_w=float(consumo_w),
+    )
+
+# Seleccionar únicamente las combinaciones que cumplen
+# el 99 % en los tres escenarios.
+validas = comparacion.loc[
+    comparacion["cumple_tres"]
+]
+
+# La tabla ya se encuentra ordenada por costo,
+# pero se ordena explícitamente por seguridad.
+mejor = (
+    validas.sort_values(
+        "costo_total_colones"
+    ).iloc[0]
+    if not validas.empty
+    else None
+)
 
 
+# ============================================================
+# SISTEMA RECOMENDADO
+# ============================================================
+
+st.subheader("🏆 Sistema recomendado")
 
 if mejor is None:
     st.warning(
         "Ninguna combinación alcanza el 99 % "
-        "en ambos escenarios."
+        "de disponibilidad en los tres escenarios "
+        "con el consumo seleccionado."
     )
+
 else:
     c1, c2, c3, c4 = st.columns(4)
 
-    c1.metric("Convertidor", mejor["convertidor"])
-    c2.metric("Batería", mejor["bateria"])
+    c1.metric(
+        "Convertidor",
+        str(mejor["convertidor"]),
+    )
+
+    c2.metric(
+        "Batería",
+        str(mejor["bateria"]),
+    )
+
     c3.metric(
         "Costo total",
         f"₡{int(mejor['costo_total_colones']):,}",
     )
+
     c4.metric(
-        "Disponibilidad reducida",
-        f"{mejor['disponibilidad_reducido_pct']:.2f} %",
+        "Disponibilidad adversa",
+        f"{mejor['disponibilidad_adverso_pct']:.2f} %",
     )
 
+    st.success(
+        "Esta es la combinación de menor costo "
+        "que cumple el requisito del 99 % "
+        "en los tres escenarios evaluados."
+    )
+
+
+# ============================================================
+# TABLA COMPARATIVA
+# ============================================================
 
 st.subheader("Comparación de las 12 combinaciones")
 
@@ -117,15 +223,16 @@ columnas = [
     "convertidor",
     "bateria",
     "costo_total_colones",
-    "disponibilidad_base_pct",
-    "disponibilidad_reducido_pct",
-    "cumple_ambos",
+    "disponibilidad_normal_pct",
+    "disponibilidad_moderado_pct",
+    "disponibilidad_adverso_pct",
+    "cumple_tres",
 ]
 
+tabla_comparativa = comparacion[columnas].copy()
 
-# Tabla comparativa con encabezados y unidades comprensibles.
 st.dataframe(
-    comparacion[columnas],
+    tabla_comparativa,
     hide_index=True,
     width="stretch",
     column_config={
@@ -139,46 +246,89 @@ st.dataframe(
             "Costo total (₡)",
             format="₡%d",
         ),
-        "disponibilidad_base_pct": st.column_config.NumberColumn(
-            "Disponibilidad normal (%)",
+        "disponibilidad_normal_pct": st.column_config.NumberColumn(
+            "Normal (%)",
             format="%.2f",
         ),
-        "disponibilidad_reducido_pct": st.column_config.NumberColumn(
-            "Disponibilidad reducida (%)",
+        "disponibilidad_moderado_pct": st.column_config.NumberColumn(
+            "Moderado -10 % (%)",
             format="%.2f",
         ),
-        "cumple_ambos": st.column_config.CheckboxColumn(
-            "Cumple ambos escenarios"
+        "disponibilidad_adverso_pct": st.column_config.NumberColumn(
+            "Adverso -20 % (%)",
+            format="%.2f",
+        ),
+        "cumple_tres": st.column_config.CheckboxColumn(
+            "Cumple los tres"
         ),
     },
 )
 
+st.download_button(
+    label="📥 Descargar comparación en CSV",
+    data=generar_csv(comparacion),
+    file_name="proyecto8_comparacion_escenarios.csv",
+    mime="text/csv",
+)
 
+
+# ============================================================
+# EXPLORACIÓN INTERACTIVA
+# ============================================================
 
 st.subheader("Explorar un sistema")
 
+st.write(
+    "Seleccione un convertidor, una batería y un escenario "
+    "para observar su comportamiento durante las 960 horas."
+)
+
 col1, col2, col3 = st.columns(3)
+
+lista_convertidores = convertidores[
+    "convertidor"
+].tolist()
+
+lista_baterias = baterias[
+    "bateria"
+].tolist()
 
 with col1:
     nombre_convertidor = st.selectbox(
         "Convertidor",
-        convertidores["convertidor"].tolist(),
-        index=2,
+        lista_convertidores,
+        index=(
+            lista_convertidores.index("WEC-150")
+            if "WEC-150" in lista_convertidores
+            else 0
+        ),
     )
 
 with col2:
     nombre_bateria = st.selectbox(
         "Batería",
-        baterias["bateria"].tolist(),
-        index=3,
+        lista_baterias,
+        index=(
+            lista_baterias.index("B20")
+            if "B20" in lista_baterias
+            else 0
+        ),
     )
 
 with col3:
     escenario = st.selectbox(
-        "Escenario",
-        ["Normal", "Oleaje reducido 20 %"],
+        "Escenario de oleaje",
+        [
+            "Normal",
+            "Oleaje reducido 10 %",
+            "Oleaje reducido 20 %",
+        ],
     )
 
+
+# ============================================================
+# SELECCIÓN DE EQUIPOS
+# ============================================================
 
 convertidor = convertidores.loc[
     convertidores["convertidor"] == nombre_convertidor
@@ -189,28 +339,59 @@ bateria = baterias.loc[
 ].iloc[0]
 
 
-if escenario == "Normal":
-    datos_escenario = registros
+# ============================================================
+# APLICAR ESCENARIO
+# ============================================================
+
+factores_reduccion = {
+    "Normal": 0.0,
+    "Oleaje reducido 10 %": 0.10,
+    "Oleaje reducido 20 %": 0.20,
+}
+
+reduccion = factores_reduccion[escenario]
+
+if reduccion == 0:
+    datos_escenario = registros.copy(deep=True)
+
 else:
     datos_escenario = reducir_oleaje(
         registros,
-        reduccion=0.20,
+        reduccion=reduccion,
     )
 
+
+# ============================================================
+# CALCULAR GENERACIÓN
+# ============================================================
 
 generacion = calcular_generacion_convertidor(
     datos_escenario,
     convertidor,
 )
 
+
+# ============================================================
+# SIMULAR BATERÍA
+# ============================================================
+
 simulacion = simular_bateria(
     generacion,
-    capacidad_kwh=float(bateria["capacidad_kWh"]),
-    consumo_w=300.0,
+    capacidad_kwh=float(
+        bateria["capacidad_kWh"]
+    ),
+    consumo_w=float(consumo_w),
     carga_inicial=1.0,
 )
 
 resumen = resumir_simulacion(simulacion)
+
+
+# ============================================================
+# INDICADORES DEL SISTEMA SELECCIONADO
+# ============================================================
+
+st.subheader("Resultados del sistema seleccionado")
 
 c1, c2, c3, c4 = st.columns(4)
 
@@ -218,70 +399,117 @@ c1.metric(
     "Disponibilidad",
     f"{resumen['disponibilidad_pct']:.2f} %",
 )
+
 c2.metric(
     "Horas cubiertas",
     str(resumen["horas_cubiertas"]),
 )
+
 c3.metric(
     "Horas sin cobertura",
     str(resumen["horas_sin_cobertura"]),
 )
+
 c4.metric(
     "Energía no servida",
-    f"{resumen['energia_no_servida_wh']:.2f} Wh",
+    f"{resumen['energia_no_servida_wh']:,.2f} Wh",
 )
 
 if resumen["cumple_99_pct"]:
-    st.success("Este sistema cumple el 99 % en el escenario seleccionado.")
+    st.success(
+        "El sistema seleccionado cumple el requisito "
+        "del 99 % en este escenario."
+    )
+
 else:
-    st.warning("Este sistema no cumple el 99 % en este escenario.")
+    st.warning(
+        "El sistema seleccionado no alcanza el 99 % "
+        "en este escenario."
+    )
 
 
-# Visualizaciones horarias
-graficos = simulacion.set_index("fecha_hora")
+# ============================================================
+# GRÁFICO DE POTENCIA GENERADA
+# ============================================================
 
 st.subheader("Potencia eléctrica generada")
 
-potencia = graficos[["potencia_generada_w"]].copy()
-potencia["consumo_estacion_w"] = 300.0
+# Crear una copia independiente para el gráfico.
+potencia = simulacion[
+    ["fecha_hora", "potencia_generada_w"]
+].copy()
 
-st.line_chart(potencia, y_label="Potencia (W)")
+potencia["consumo_estacion_w"] = float(consumo_w)
+
+potencia = potencia.set_index("fecha_hora")
+
+st.line_chart(
+    potencia,
+    x_label="Fecha",
+    y_label="Potencia eléctrica (W)",
+    width="stretch",
+)
+
+st.caption(
+    "La gráfica compara la potencia generada "
+    "con la demanda eléctrica de la estación."
+)
 
 
+# ============================================================
+# GRÁFICO DE ALMACENAMIENTO
+# ============================================================
 
 st.subheader("Energía almacenada en la batería")
 
-# Preparar valores en kWh con fechas reales del registro.
 energia = simulacion[
-    ["fecha_hora", "energia_bateria_final_wh"]
+    [
+        "fecha_hora",
+        "energia_bateria_final_wh",
+    ]
 ].copy()
 
+# Convertir Wh a kWh para facilitar la interpretación.
 energia["energia_bateria_final_kwh"] = (
     energia["energia_bateria_final_wh"] / 1000.0
 )
 
-# Limitar el eje horizontal al intervalo observado.
 inicio = energia["fecha_hora"].min()
 fin = energia["fecha_hora"].max()
-capacidad = float(bateria["capacidad_kWh"])
+
+capacidad = float(
+    bateria["capacidad_kWh"]
+)
 
 grafico_bateria = (
     alt.Chart(energia)
-    .mark_line(color="#1677C8", strokeWidth=2)
+    .mark_line(
+        color="#1677C8",
+        strokeWidth=2,
+    )
     .encode(
         x=alt.X(
             "fecha_hora:T",
             title="Fecha",
-            scale=alt.Scale(domain=[inicio, fin]),
-            axis=alt.Axis(format="%d/%m"),
+            scale=alt.Scale(
+                domain=[inicio, fin]
+            ),
+            axis=alt.Axis(
+                format="%d/%m"
+            ),
         ),
         y=alt.Y(
             "energia_bateria_final_kwh:Q",
             title="Energía almacenada (kWh)",
-            scale=alt.Scale(domain=[0, capacidad]),
+            scale=alt.Scale(
+                domain=[0, capacidad]
+            ),
         ),
         tooltip=[
-            alt.Tooltip("fecha_hora:T", title="Fecha"),
+            alt.Tooltip(
+                "fecha_hora:T",
+                title="Fecha",
+            ),
             alt.Tooltip(
                 "energia_bateria_final_kwh:Q",
                 title="Energía (kWh)",
@@ -289,8 +517,12 @@ grafico_bateria = (
             ),
         ],
     )
-    .properties(height=350)
-    .interactive(bind_y=False)
+    .properties(
+        height=350
+    )
+    .interactive(
+        bind_y=False
+    )
 )
 
 st.altair_chart(
@@ -300,24 +532,66 @@ st.altair_chart(
 
 st.caption(
     f"Capacidad máxima: {capacidad:g} kWh. "
-    "La simulación comienza con la batería al 100 %."
+    "La batería comienza la simulación "
+    "completamente cargada."
 )
 
+
+# ============================================================
+# DESCARGAR SIMULACIÓN HORARIA
+# ============================================================
+
+st.subheader("Descargar los resultados horarios")
+
+st.download_button(
+    label="📥 Descargar simulación en CSV",
+    data=generar_csv(simulacion),
+    file_name=(
+        f"proyecto8_{nombre_convertidor}_"
+        f"{nombre_bateria}_"
+        f"{int(reduccion * 100)}pct.csv"
+    ),
+    mime="text/csv",
+)
+
+
+# ============================================================
+# INFORMACIÓN GENERAL DE LOS REGISTROS
+# ============================================================
+
+st.subheader("Resumen de los datos procesados")
 
 c1, c2, c3 = st.columns(3)
 
-c1.metric("Horas procesadas", len(registros))
-c2.metric(
-    "Alturas interpoladas",
-    int(registros["altura_estimada"].sum()),
-)
-c3.metric(
-    "Flujo medio",
-    f"{registros['flujo_energia_w_m'].mean():,.2f} W/m",
+c1.metric(
+    "Horas procesadas",
+    len(registros),
 )
 
+c2.metric(
+    "Alturas interpoladas",
+    int(
+        registros["altura_estimada"].sum()
+    ),
+)
+
+c3.metric(
+    "Flujo energético medio",
+    (
+        f"{registros['flujo_energia_w_m'].mean():,.2f} W/m"
+    ),
+)
+
+
+# ============================================================
+# SUPUESTOS Y LIMITACIONES
+# ============================================================
+
 st.info(
-    "Los resultados representan una simulación con los datos "
-    "y supuestos del proyecto. No constituyen una garantía "
-    "de funcionamiento en condiciones reales."
+    "Los resultados corresponden a una simulación académica "
+    "basada en datos proporcionados por el profesor. "
+    "Se supone una batería inicialmente cargada al 100 %, "
+    "sin pérdidas adicionales ni degradación. "
+    "La disponibilidad calculada no constituye una garantía "
+    "de funcionamiento real."
 )
