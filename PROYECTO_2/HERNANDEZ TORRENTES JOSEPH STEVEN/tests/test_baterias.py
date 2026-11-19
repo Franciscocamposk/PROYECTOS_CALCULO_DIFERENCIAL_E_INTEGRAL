@@ -1,20 +1,19 @@
-
 """Pruebas del balance horario de energía de las baterías."""
 
 import pandas as pd
 import pytest
 
-from src.baterias import simular_bateria, resumir_simulacion
+from src.baterias import resumir_simulacion, simular_bateria
 
 
 def crear_datos(potencias):
     """Genera registros horarios consecutivos de prueba."""
-    return pd.DataFrame({
-        "fecha_hora": pd.date_range(
-            "2026-05-01", periods=len(potencias), freq="h"
-        ),
-        "potencia_generada_w": potencias,
-    })
+    return pd.DataFrame(
+        {
+            "fecha_hora": pd.date_range("2026-05-01", periods=len(potencias), freq="h"),
+            "potencia_generada_w": potencias,
+        }
+    )
 
 
 def test_bateria_cubre_deficit():
@@ -22,9 +21,7 @@ def test_bateria_cubre_deficit():
     resultado = simular_bateria(crear_datos([0]), 2)
 
     assert bool(resultado.loc[0, "hora_cubierta"])
-    assert resultado.loc[0, "energia_bateria_final_wh"] == pytest.approx(
-        1700
-    )
+    assert resultado.loc[0, "energia_bateria_final_wh"] == pytest.approx(1700)
 
 
 def test_bateria_se_agota():
@@ -41,9 +38,7 @@ def test_recarga_limitada_por_capacidad():
     """No permite almacenar más que la capacidad disponible."""
     resultado = simular_bateria(crear_datos([0, 900]), 2)
 
-    assert resultado.loc[1, "energia_bateria_final_wh"] == pytest.approx(
-        2000
-    )
+    assert resultado.loc[1, "energia_bateria_final_wh"] == pytest.approx(2000)
     assert resultado.loc[1, "energia_vertida_wh"] == pytest.approx(300)
 
 
@@ -52,9 +47,7 @@ def test_generacion_directa_suficiente():
     resultado = simular_bateria(crear_datos([300, 300]), 2)
 
     assert resultado["hora_cubierta"].all()
-    assert resultado["energia_bateria_final_wh"].tolist() == pytest.approx(
-        [2000, 2000]
-    )
+    assert resultado["energia_bateria_final_wh"].tolist() == pytest.approx([2000, 2000])
 
 
 def test_balance_de_energia():
@@ -62,10 +55,7 @@ def test_balance_de_energia():
     resultado = simular_bateria(crear_datos([100, 600, 0, 900]), 2)
 
     for _, fila in resultado.iterrows():
-        entradas = (
-            fila["energia_bateria_inicio_wh"]
-            + fila["energia_generada_wh"]
-        )
+        entradas = fila["energia_bateria_inicio_wh"] + fila["energia_generada_wh"]
         salidas = (
             fila["energia_servida_wh"]
             + fila["energia_vertida_wh"]

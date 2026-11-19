@@ -1,10 +1,9 @@
-
 """Pruebas automáticas de los métodos de integración numérica."""
 
 import numpy as np
 import pytest
 
-from src.integracion import trapecio_compuesto, simpson_compuesto
+from src.integracion import simpson_compuesto, trapecio_compuesto
 
 
 def test_trapecio_funcion_constante():

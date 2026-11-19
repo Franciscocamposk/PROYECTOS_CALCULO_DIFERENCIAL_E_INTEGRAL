@@ -1,4 +1,3 @@
-
 """
 Generación reproducible de resultados del Proyecto 8.
 
@@ -20,9 +19,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from src.procesamiento_oleaje import preparar_energia_oleaje
 from src.escenarios import comparar_tres_escenarios
-
+from src.procesamiento_oleaje import preparar_energia_oleaje
 
 # Directorios independientes del lugar de ejecución.
 RAIZ_PROYECTO = Path(__file__).resolve().parent.parent
@@ -67,19 +65,13 @@ def generar_reporte() -> None:
     faltantes = obligatorias - set(hojas)
 
     if faltantes:
-        raise ValueError(
-            f"Faltan hojas: {sorted(faltantes)}"
-        )
+        raise ValueError(f"Faltan hojas: {sorted(faltantes)}")
 
     # Procesar registros de oleaje.
-    registros = preparar_energia_oleaje(
-        hojas["Registros_oleaje"]
-    )
+    registros = preparar_energia_oleaje(hojas["Registros_oleaje"])
 
     if registros.empty:
-        raise ValueError(
-            "No hay registros para generar el reporte."
-        )
+        raise ValueError("No hay registros para generar el reporte.")
 
     # Evaluar 12 combinaciones en tres escenarios.
     comparacion = comparar_tres_escenarios(
@@ -105,16 +97,12 @@ def generar_reporte() -> None:
         encoding="utf-8-sig",
     )
 
-    validas = comparacion.loc[
-        comparacion["cumple_tres"]
-    ].sort_values(
+    validas = comparacion.loc[comparacion["cumple_tres"]].sort_values(
         "costo_total_colones"
     )
 
     if validas.empty:
-        raise RuntimeError(
-            "Ninguna combinación cumple los tres escenarios."
-        )
+        raise RuntimeError("Ninguna combinación cumple los tres escenarios.")
 
     mejor = validas.iloc[0]
 
@@ -136,9 +124,7 @@ def generar_reporte() -> None:
         linewidth=0.9,
     )
 
-    ax.set_title(
-        "Altura significativa del oleaje frente a Pavones"
-    )
+    ax.set_title("Altura significativa del oleaje frente a Pavones")
     ax.set_xlabel("Fecha")
     ax.set_ylabel("Altura significativa (m)")
     ax.grid(alpha=0.3)
@@ -172,9 +158,7 @@ def generar_reporte() -> None:
         alpha=0.25,
     )
 
-    ax.set_title(
-        "Flujo energético del oleaje"
-    )
+    ax.set_title("Flujo energético del oleaje")
     ax.set_xlabel("Fecha")
     ax.set_ylabel("Flujo energético (W/m)")
     ax.grid(alpha=0.3)
@@ -237,9 +221,7 @@ def generar_reporte() -> None:
     ax.set_xlim(0, 105)
     ax.set_xlabel("Disponibilidad (%)")
     ax.set_ylabel("Convertidor + batería")
-    ax.set_title(
-        "Disponibilidad de las 12 combinaciones"
-    )
+    ax.set_title("Disponibilidad de las 12 combinaciones")
 
     ax.legend()
     ax.grid(axis="x", alpha=0.25)
@@ -266,10 +248,7 @@ def generar_reporte() -> None:
     print("Convertidor:", mejor["convertidor"])
     print("Batería:", mejor["bateria"])
 
-    print(
-        "Costo: "
-        f"₡{mejor['costo_total_colones']:,.0f}"
-    )
+    print(f"Costo: ₡{mejor['costo_total_colones']:,.0f}")
 
     for escenario in (
         "normal",
@@ -277,10 +256,7 @@ def generar_reporte() -> None:
         "adverso",
     ):
         columna = f"disponibilidad_{escenario}_pct"
-        print(
-            f"Disponibilidad {escenario}: "
-            f"{mejor[columna]:.2f}%"
-        )
+        print(f"Disponibilidad {escenario}: {mejor[columna]:.2f}%")
 
     print("\nArchivos generados:")
 

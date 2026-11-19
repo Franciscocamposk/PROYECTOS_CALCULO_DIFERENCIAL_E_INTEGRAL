@@ -1,4 +1,3 @@
-
 """Pruebas de varianza de elevación y altura significativa."""
 
 import pandas as pd
@@ -45,11 +44,13 @@ def test_rechazar_metodo_desconocido():
 
 def test_calcular_registros_separados():
     """Cada registro debe procesarse de forma independiente."""
-    muestras = pd.DataFrame({
-        "registro": [1, 1, 1, 2, 2, 2],
-        "tiempo_s": [0, 1, 2, 0, 1, 2],
-        "elevacion_m": [1, 1, 1, 2, 2, 2],
-    })
+    muestras = pd.DataFrame(
+        {
+            "registro": [1, 1, 1, 2, 2, 2],
+            "tiempo_s": [0, 1, 2, 0, 1, 2],
+            "elevacion_m": [1, 1, 1, 2, 2, 2],
+        }
+    )
 
     resultados = calcular_por_registro(muestras)
 
@@ -98,4 +99,3 @@ def test_metodo_hibrido_con_un_intervalo():
     )
 
     assert resultado["altura_significativa_m"] == pytest.approx(8)
-

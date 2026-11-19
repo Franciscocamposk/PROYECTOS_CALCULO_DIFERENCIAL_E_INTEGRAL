@@ -1,11 +1,10 @@
-
 """Validaciones matemáticas y energéticas del Proyecto 8."""
 
 import numpy as np
 import pytest
 
-from src.integracion import trapecio_compuesto, simpson_compuesto
 from src.baterias import Bateria
+from src.integracion import simpson_compuesto, trapecio_compuesto
 
 
 def test_varianza_senoidal_trapecio():
@@ -38,10 +37,7 @@ def test_balance_energetico_bateria():
     )
 
     for _, fila in simulacion.iterrows():
-        cambio = (
-            fila["energia_bateria_final_wh"]
-            - fila["energia_inicial_wh"]
-        )
+        cambio = fila["energia_bateria_final_wh"] - fila["energia_inicial_wh"]
 
         balance = (
             fila["energia_generada_wh"]
@@ -58,9 +54,7 @@ def test_bateria_respeta_capacidad():
     bateria = Bateria(capacidad_kwh=1)
     resultado = bateria.simular([5000, 0, 0], Pc=300)
 
-    assert resultado["energia_bateria_final_wh"].between(
-        0, 1000
-    ).all()
+    assert resultado["energia_bateria_final_wh"].between(0, 1000).all()
 
 
 def test_bateria_registra_energia_no_atendida():
@@ -80,7 +74,6 @@ def test_bateria_rechaza_intervalo_invalido():
         bateria.simular([300], Pc=300, dt=0)
 
 
-
 from src.escenarios import comparar_tres_escenarios
 
 
@@ -88,30 +81,38 @@ def test_tres_escenarios_generan_columnas():
     """Comprueba las tres disponibilidades y su selección."""
     import pandas as pd
 
-    registros = pd.DataFrame({
-        "altura_significativa_m": [2.0] * 4,
-        "flujo_energia_w_m": [10000.0] * 4,
-    })
+    registros = pd.DataFrame(
+        {
+            "altura_significativa_m": [2.0] * 4,
+            "flujo_energia_w_m": [10000.0] * 4,
+        }
+    )
 
-    convertidores = pd.DataFrame([{
-        "convertidor": "PRUEBA",
-        "ancho_captura_m": 1.0,
-        "eficiencia": 0.10,
-        "potencia_nominal_W": 500.0,
-        "costo_colones": 1000,
-    }])
+    convertidores = pd.DataFrame(
+        [
+            {
+                "convertidor": "PRUEBA",
+                "ancho_captura_m": 1.0,
+                "eficiencia": 0.10,
+                "potencia_nominal_W": 500.0,
+                "costo_colones": 1000,
+            }
+        ]
+    )
 
-    baterias = pd.DataFrame([{
-        "bateria": "PRUEBA",
-        "capacidad_kWh": 2.0,
-        "costo_colones": 500,
-    }])
+    baterias = pd.DataFrame(
+        [
+            {
+                "bateria": "PRUEBA",
+                "capacidad_kWh": 2.0,
+                "costo_colones": 500,
+            }
+        ]
+    )
 
     # Las columnas de ejemplo deben coincidir con las
     # que utiliza calcular_generacion_convertidor().
-    resultado = comparar_tres_escenarios(
-        registros, convertidores, baterias
-    )
+    resultado = comparar_tres_escenarios(registros, convertidores, baterias)
 
     assert len(resultado) == 1
     assert "disponibilidad_normal_pct" in resultado

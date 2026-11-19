@@ -1,4 +1,3 @@
-
 """
 Escenarios de oleaje y selección del sistema de menor costo.
 
@@ -44,45 +43,43 @@ def comparar_escenarios(
 ):
     """Evalúa todas las opciones en ambos escenarios."""
 
-    base = evaluar_combinaciones(
-        registros, convertidores, baterias, consumo_w
-    )
+    base = evaluar_combinaciones(registros, convertidores, baterias, consumo_w)
 
     reducidos = reducir_oleaje(registros, reduccion)
 
-    adverso = evaluar_combinaciones(
-        reducidos, convertidores, baterias, consumo_w
-    )
+    adverso = evaluar_combinaciones(reducidos, convertidores, baterias, consumo_w)
 
     claves = ["convertidor", "bateria"]
 
-    adverso = adverso[claves + [
-        "horas_sin_cobertura",
-        "disponibilidad_pct",
-        "cumple_99_pct",
-    ]].rename(columns={
-        "horas_sin_cobertura": "horas_sin_cobertura_reducido",
-        "disponibilidad_pct": "disponibilidad_reducido_pct",
-        "cumple_99_pct": "cumple_reducido",
-    })
-
-    comparacion = base.merge(
-        adverso, on=claves, validate="one_to_one"
+    adverso = adverso[
+        claves
+        + [
+            "horas_sin_cobertura",
+            "disponibilidad_pct",
+            "cumple_99_pct",
+        ]
+    ].rename(
+        columns={
+            "horas_sin_cobertura": "horas_sin_cobertura_reducido",
+            "disponibilidad_pct": "disponibilidad_reducido_pct",
+            "cumple_99_pct": "cumple_reducido",
+        }
     )
 
-    comparacion = comparacion.rename(columns={
-        "disponibilidad_pct": "disponibilidad_base_pct",
-        "cumple_99_pct": "cumple_base",
-    })
+    comparacion = base.merge(adverso, on=claves, validate="one_to_one")
+
+    comparacion = comparacion.rename(
+        columns={
+            "disponibilidad_pct": "disponibilidad_base_pct",
+            "cumple_99_pct": "cumple_base",
+        }
+    )
 
     comparacion["cumple_ambos"] = (
-        comparacion["cumple_base"]
-        & comparacion["cumple_reducido"]
+        comparacion["cumple_base"] & comparacion["cumple_reducido"]
     )
 
-    return comparacion.sort_values(
-        "costo_total_colones"
-    ).reset_index(drop=True)
+    return comparacion.sort_values("costo_total_colones").reset_index(drop=True)
 
 
 def seleccionar_menor_costo(comparacion: pd.DataFrame):
@@ -93,10 +90,7 @@ def seleccionar_menor_costo(comparacion: pd.DataFrame):
     if opciones.empty:
         return None
 
-    return opciones.sort_values(
-        "costo_total_colones"
-    ).iloc[0]
-
+    return opciones.sort_values("costo_total_colones").iloc[0]
 
 
 def comparar_tres_escenarios(
@@ -171,6 +165,4 @@ def comparar_tres_escenarios(
         & resultado["cumple_adverso"]
     )
 
-    return resultado.sort_values(
-        "costo_total_colones"
-    ).reset_index(drop=True)
+    return resultado.sort_values("costo_total_colones").reset_index(drop=True)

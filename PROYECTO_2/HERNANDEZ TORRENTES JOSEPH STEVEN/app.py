@@ -1,4 +1,3 @@
-
 """
 Aplicación web del Proyecto 8.
 
@@ -15,30 +14,27 @@ Funciones:
 El Excel original se utiliza únicamente para lectura.
 """
 
-from pathlib import Path
 from io import BytesIO
+from pathlib import Path
 
 import altair as alt
 import pandas as pd
 import streamlit as st
 
-from src.procesamiento_oleaje import preparar_energia_oleaje
+from src.baterias import resumir_simulacion, simular_bateria
+from src.convertidores import calcular_generacion_convertidor
 from src.escenarios import (
     comparar_tres_escenarios,
     reducir_oleaje,
 )
-from src.convertidores import calcular_generacion_convertidor
-from src.baterias import simular_bateria, resumir_simulacion
-
+from src.procesamiento_oleaje import preparar_energia_oleaje
 
 # ============================================================
 # CONFIGURACIÓN GENERAL
 # ============================================================
 
-RUTA_EXCEL = (
-    Path(__file__).resolve().parent
-    / "P08_C-04_HERNANDEZ.xlsx"
-)
+RUTA_EXCEL = Path(__file__).resolve().parent / "P08_C-04_HERNANDEZ.xlsx"
+
 
 @st.cache_data
 def generar_csv(datos: pd.DataFrame) -> bytes:
@@ -48,10 +44,7 @@ def generar_csv(datos: pd.DataFrame) -> bytes:
     Entrada: DataFrame con los resultados.
     Salida: contenido CSV en bytes, codificado en UTF-8.
     """
-    return datos.to_csv(
-        index=False
-    ).encode("utf-8-sig")
-
+    return datos.to_csv(index=False).encode("utf-8-sig")
 
 
 st.set_page_config(
@@ -98,14 +91,9 @@ def cargar_proyecto(archivo_excel: bytes | None = None):
     faltantes = hojas_obligatorias - set(hojas)
 
     if faltantes:
-        raise ValueError(
-            "Faltan hojas obligatorias: "
-            + ", ".join(sorted(faltantes))
-        )
+        raise ValueError("Faltan hojas obligatorias: " + ", ".join(sorted(faltantes)))
 
-    registros = preparar_energia_oleaje(
-        hojas["Registros_oleaje"]
-    )
+    registros = preparar_energia_oleaje(hojas["Registros_oleaje"])
 
     return (
         registros,
@@ -155,19 +143,13 @@ archivo_subido = st.file_uploader(
 
 if archivo_subido is None:
     contenido_excel = None
-    st.caption(
-        "Fuente activa: P08_C-04_HERNANDEZ.xlsx"
-    )
+    st.caption("Fuente activa: P08_C-04_HERNANDEZ.xlsx")
 else:
     contenido_excel = archivo_subido.getvalue()
-    st.caption(
-        f"Fuente activa: {archivo_subido.name}"
-    )
+    st.caption(f"Fuente activa: {archivo_subido.name}")
 
 try:
-    registros, convertidores, baterias = cargar_proyecto(
-        contenido_excel
-    )
+    registros, convertidores, baterias = cargar_proyecto(contenido_excel)
 
 except (
     FileNotFoundError,
@@ -176,11 +158,8 @@ except (
     TypeError,
     ImportError,
 ) as error:
-    st.error(
-        f"No fue posible cargar los datos: {error}"
-    )
+    st.error(f"No fue posible cargar los datos: {error}")
     st.stop()
-
 
 
 # ============================================================
@@ -225,18 +204,12 @@ with st.spinner("Evaluando las 12 combinaciones..."):
 
 # Seleccionar únicamente las combinaciones que cumplen
 # el 99 % en los tres escenarios.
-validas = comparacion.loc[
-    comparacion["cumple_tres"]
-]
+validas = comparacion.loc[comparacion["cumple_tres"]]
 
 # La tabla ya se encuentra ordenada por costo,
 # pero se ordena explícitamente por seguridad.
 mejor = (
-    validas.sort_values(
-        "costo_total_colones"
-    ).iloc[0]
-    if not validas.empty
-    else None
+    validas.sort_values("costo_total_colones").iloc[0] if not validas.empty else None
 )
 
 
@@ -306,12 +279,8 @@ st.dataframe(
     hide_index=True,
     width="stretch",
     column_config={
-        "convertidor": st.column_config.TextColumn(
-            "Convertidor"
-        ),
-        "bateria": st.column_config.TextColumn(
-            "Batería"
-        ),
+        "convertidor": st.column_config.TextColumn("Convertidor"),
+        "bateria": st.column_config.TextColumn("Batería"),
         "costo_total_colones": st.column_config.NumberColumn(
             "Costo total (₡)",
             format="₡%d",
@@ -328,9 +297,7 @@ st.dataframe(
             "Adverso -20 % (%)",
             format="%.2f",
         ),
-        "cumple_tres": st.column_config.CheckboxColumn(
-            "Cumple los tres"
-        ),
+        "cumple_tres": st.column_config.CheckboxColumn("Cumple los tres"),
     },
 )
 
@@ -355,13 +322,9 @@ st.write(
 
 col1, col2, col3 = st.columns(3)
 
-lista_convertidores = convertidores[
-    "convertidor"
-].tolist()
+lista_convertidores = convertidores["convertidor"].tolist()
 
-lista_baterias = baterias[
-    "bateria"
-].tolist()
+lista_baterias = baterias["bateria"].tolist()
 
 with col1:
     nombre_convertidor = st.selectbox(
@@ -378,11 +341,7 @@ with col2:
     nombre_bateria = st.selectbox(
         "Batería",
         lista_baterias,
-        index=(
-            lista_baterias.index("B20")
-            if "B20" in lista_baterias
-            else 0
-        ),
+        index=(lista_baterias.index("B20") if "B20" in lista_baterias else 0),
     )
 
 with col3:
@@ -404,9 +363,7 @@ convertidor = convertidores.loc[
     convertidores["convertidor"] == nombre_convertidor
 ].iloc[0]
 
-bateria = baterias.loc[
-    baterias["bateria"] == nombre_bateria
-].iloc[0]
+bateria = baterias.loc[baterias["bateria"] == nombre_bateria].iloc[0]
 
 
 # ============================================================
@@ -447,9 +404,7 @@ generacion = calcular_generacion_convertidor(
 
 simulacion = simular_bateria(
     generacion,
-    capacidad_kwh=float(
-        bateria["capacidad_kWh"]
-    ),
+    capacidad_kwh=float(bateria["capacidad_kWh"]),
     consumo_w=float(consumo_w),
     carga_inicial=1.0,
 )
@@ -487,15 +442,11 @@ c4.metric(
 
 if resumen["cumple_99_pct"]:
     st.success(
-        "El sistema seleccionado cumple el requisito "
-        "del 99 % en este escenario."
+        "El sistema seleccionado cumple el requisito del 99 % en este escenario."
     )
 
 else:
-    st.warning(
-        "El sistema seleccionado no alcanza el 99 % "
-        "en este escenario."
-    )
+    st.warning("El sistema seleccionado no alcanza el 99 % en este escenario.")
 
 
 # ============================================================
@@ -505,9 +456,7 @@ else:
 st.subheader("Potencia eléctrica generada")
 
 # Crear una copia independiente para el gráfico.
-potencia = simulacion[
-    ["fecha_hora", "potencia_generada_w"]
-].copy()
+potencia = simulacion[["fecha_hora", "potencia_generada_w"]].copy()
 
 potencia["consumo_estacion_w"] = float(consumo_w)
 
@@ -521,8 +470,7 @@ st.line_chart(
 )
 
 st.caption(
-    "La gráfica compara la potencia generada "
-    "con la demanda eléctrica de la estación."
+    "La gráfica compara la potencia generada con la demanda eléctrica de la estación."
 )
 
 
@@ -541,28 +489,18 @@ st.write(
     "la curva de potencia eléctrica respecto al tiempo."
 )
 
-st.latex(
-    r"E_g = \int_{t_0}^{t_f} P_g(t)\,dt"
-)
+st.latex(r"E_g = \int_{t_0}^{t_f} P_g(t)\,dt")
 
 # Cada registro representa un intervalo de una hora.
 dt_horas = 1.0
 
 # Integración discreta de la potencia horaria.
-energia_total_wh = (
-    simulacion["potencia_generada_w"].sum()
-    * dt_horas
-)
+energia_total_wh = simulacion["potencia_generada_w"].sum() * dt_horas
 
 energia_total_kwh = energia_total_wh / 1000.0
 
 # Energía requerida durante todas las horas analizadas.
-energia_requerida_kwh = (
-    float(consumo_w)
-    * len(simulacion)
-    * dt_horas
-    / 1000.0
-)
+energia_requerida_kwh = float(consumo_w) * len(simulacion) * dt_horas / 1000.0
 
 c1, c2 = st.columns(2)
 
@@ -577,9 +515,7 @@ c2.metric(
 )
 
 # Preparar datos para mostrar el área bajo P(t).
-datos_integral = simulacion[
-    ["fecha_hora", "potencia_generada_w"]
-].copy()
+datos_integral = simulacion[["fecha_hora", "potencia_generada_w"]].copy()
 
 # Área sombreada que representa la integral.
 area_potencia = (
@@ -657,23 +593,16 @@ st.write(
     "de las 960 horas."
 )
 
-st.latex(
-    r"E(t)=\int_{t_0}^{t}P(u)\,du"
-)
+st.latex(r"E(t)=\int_{t_0}^{t}P(u)\,du")
 
 # Cada observación representa una hora de generación.
 dt_horas = 1.0
 
-datos_acumulados = simulacion[
-    ["fecha_hora", "potencia_generada_w"]
-].copy()
+datos_acumulados = simulacion[["fecha_hora", "potencia_generada_w"]].copy()
 
 # Integral acumulada usando intervalos horarios.
 datos_acumulados["generada_kwh"] = (
-    datos_acumulados["potencia_generada_w"]
-    .cumsum()
-    * dt_horas
-    / 1000.0
+    datos_acumulados["potencia_generada_w"].cumsum() * dt_horas / 1000.0
 )
 
 # Consumo eléctrico acumulado.
@@ -754,17 +683,11 @@ st.altair_chart(
 )
 
 # Valores finales.
-generada_final = float(
-    datos_acumulados["generada_kwh"].iloc[-1]
-)
+generada_final = float(datos_acumulados["generada_kwh"].iloc[-1])
 
-requerida_final = float(
-    datos_acumulados["requerida_kwh"].iloc[-1]
-)
+requerida_final = float(datos_acumulados["requerida_kwh"].iloc[-1])
 
-diferencia_energia = (
-    generada_final - requerida_final
-)
+diferencia_energia = generada_final - requerida_final
 
 c1, c2, c3 = st.columns(3)
 
@@ -792,8 +715,6 @@ st.caption(
 )
 
 
-
-
 st.subheader("Energía almacenada en la batería")
 
 energia = simulacion[
@@ -804,16 +725,12 @@ energia = simulacion[
 ].copy()
 
 # Convertir Wh a kWh para facilitar la interpretación.
-energia["energia_bateria_final_kwh"] = (
-    energia["energia_bateria_final_wh"] / 1000.0
-)
+energia["energia_bateria_final_kwh"] = energia["energia_bateria_final_wh"] / 1000.0
 
 inicio = energia["fecha_hora"].min()
 fin = energia["fecha_hora"].max()
 
-capacidad = float(
-    bateria["capacidad_kWh"]
-)
+capacidad = float(bateria["capacidad_kWh"])
 
 grafico_bateria = (
     alt.Chart(energia)
@@ -825,19 +742,13 @@ grafico_bateria = (
         x=alt.X(
             "fecha_hora:T",
             title="Fecha",
-            scale=alt.Scale(
-                domain=[inicio, fin]
-            ),
-            axis=alt.Axis(
-                format="%d/%m"
-            ),
+            scale=alt.Scale(domain=[inicio, fin]),
+            axis=alt.Axis(format="%d/%m"),
         ),
         y=alt.Y(
             "energia_bateria_final_kwh:Q",
             title="Energía almacenada (kWh)",
-            scale=alt.Scale(
-                domain=[0, capacidad]
-            ),
+            scale=alt.Scale(domain=[0, capacidad]),
         ),
         tooltip=[
             alt.Tooltip(
@@ -851,12 +762,8 @@ grafico_bateria = (
             ),
         ],
     )
-    .properties(
-        height=350
-    )
-    .interactive(
-        bind_y=False
-    )
+    .properties(height=350)
+    .interactive(bind_y=False)
 )
 
 st.altair_chart(
@@ -881,9 +788,7 @@ st.download_button(
     label="📥 Descargar simulación en CSV",
     data=generar_csv(simulacion),
     file_name=(
-        f"proyecto8_{nombre_convertidor}_"
-        f"{nombre_bateria}_"
-        f"{int(reduccion * 100)}pct.csv"
+        f"proyecto8_{nombre_convertidor}_{nombre_bateria}_{int(reduccion * 100)}pct.csv"
     ),
     mime="text/csv",
 )
@@ -904,16 +809,12 @@ c1.metric(
 
 c2.metric(
     "Alturas interpoladas",
-    int(
-        registros["altura_estimada"].sum()
-    ),
+    int(registros["altura_estimada"].sum()),
 )
 
 c3.metric(
     "Flujo energético medio",
-    (
-        f"{registros['flujo_energia_w_m'].mean():,.2f} W/m"
-    ),
+    (f"{registros['flujo_energia_w_m'].mean():,.2f} W/m"),
 )
 
 

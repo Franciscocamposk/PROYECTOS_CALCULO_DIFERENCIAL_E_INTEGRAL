@@ -1,4 +1,3 @@
-
 """
 Modelo de generación eléctrica de convertidores de oleaje.
 
@@ -85,9 +84,7 @@ def calcular_generacion_convertidor(registros, convertidor):
     # Validar los parámetros incluso si no hay registros.
     calcular_potencia_generada(0, ancho, eficiencia, nominal)
 
-    flujo = pd.to_numeric(
-        resultado["flujo_energia_w_m"], errors="raise"
-    )
+    flujo = pd.to_numeric(resultado["flujo_energia_w_m"], errors="raise")
 
     if flujo.isna().any() or not np.isfinite(flujo).all():
         raise ValueError("El flujo energético debe estar completo.")

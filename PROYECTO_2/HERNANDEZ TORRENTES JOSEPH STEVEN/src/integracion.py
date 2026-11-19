@@ -1,4 +1,3 @@
-
 """
 Integración numérica para el Proyecto 8.
 
@@ -74,23 +73,17 @@ def simpson_compuesto(x, y):
     n = len(x) - 1
 
     if n < 2 or n % 2 != 0:
-        raise ValueError(
-            "Simpson requiere una cantidad par de subintervalos."
-        )
+        raise ValueError("Simpson requiere una cantidad par de subintervalos.")
 
     diferencias = np.diff(x)
     h = diferencias[0]
 
     if not np.allclose(diferencias, h, rtol=1e-9, atol=1e-12):
-        raise ValueError(
-            "Simpson requiere puntos igualmente espaciados."
-        )
+        raise ValueError("Simpson requiere puntos igualmente espaciados.")
 
     suma_impares = np.sum(y[1:-1:2])
     suma_pares = np.sum(y[2:-1:2])
 
-    resultado = (h / 3) * (
-        y[0] + y[-1] + 4 * suma_impares + 2 * suma_pares
-    )
+    resultado = (h / 3) * (y[0] + y[-1] + 4 * suma_impares + 2 * suma_pares)
 
     return float(resultado)

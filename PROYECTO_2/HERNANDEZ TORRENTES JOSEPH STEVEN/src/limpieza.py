@@ -1,4 +1,3 @@
-
 import pandas as pd
 
 
@@ -25,17 +24,12 @@ def validar_columnas(oleaje: pd.DataFrame) -> bool:
 
     for columna in columnas_necesarias:
         if columna not in oleaje.columns:
-            raise ValueError(
-                f"Falta la columna obligatoria: {columna}"
-            )
+            raise ValueError(f"Falta la columna obligatoria: {columna}")
 
     return True
 
 
-
-def detectar_faltantes(
-    datos: pd.DataFrame
-) -> pd.Series:
+def detectar_faltantes(datos: pd.DataFrame) -> pd.Series:
     """
     Cuenta los valores faltantes de cada columna.
 
@@ -55,11 +49,7 @@ def detectar_faltantes(
     return faltantes
 
 
-
-def detectar_atipicos(
-    datos: pd.DataFrame,
-    columna: str
-) -> pd.DataFrame:
+def detectar_atipicos(datos: pd.DataFrame, columna: str) -> pd.DataFrame:
     """
     Detecta posibles valores atipicos mediante IQR.
 
@@ -79,15 +69,11 @@ def detectar_atipicos(
 
     # Comprobar que la columna existe
     if columna not in datos.columns:
-        raise ValueError(
-            f"No existe la columna: {columna}"
-        )
+        raise ValueError(f"No existe la columna: {columna}")
 
     # Comprobar que sea numerica
     if not pd.api.types.is_numeric_dtype(datos[columna]):
-        raise TypeError(
-            f"La columna no es numerica: {columna}"
-        )
+        raise TypeError(f"La columna no es numerica: {columna}")
 
     # Calcular cuartiles
     q1 = datos[columna].quantile(0.25)
@@ -101,10 +87,7 @@ def detectar_atipicos(
     limite_superior = q3 + 1.5 * iqr
 
     # Seleccionar posibles valores atipicos
-    mascara = (
-        (datos[columna] < limite_inferior)
-        | (datos[columna] > limite_superior)
-    )
+    mascara = (datos[columna] < limite_inferior) | (datos[columna] > limite_superior)
 
     atipicos = datos.loc[mascara].copy()
     """.loc[mascara] selecciona las filas que cumplen nuestra condición,
@@ -112,14 +95,10 @@ def detectar_atipicos(
     Así evitamos que operaciones posteriores sobre el resultado modifiquen
     accidentalmente nuestra tabla de trabajo."""
 
-
     return atipicos
 
 
-
-def preparar_copia(
-    datos: pd.DataFrame
-) -> pd.DataFrame:
+def preparar_copia(datos: pd.DataFrame) -> pd.DataFrame:
     """
     Crea una copia independiente de los datos.
 
@@ -148,10 +127,7 @@ def preparar_copia(
     return copia
 
 
-
-def interpolar_alturas(
-    datos: pd.DataFrame
-) -> pd.DataFrame:
+def interpolar_alturas(datos: pd.DataFrame) -> pd.DataFrame:
     """
     Estima alturas faltantes mediante interpolacion lineal.
 
@@ -179,10 +155,7 @@ def interpolar_alturas(
     copia = preparar_copia(datos)
 
     # Convertir fechas a valores temporales
-    fechas = pd.to_datetime(
-        copia["fecha_hora"],
-        errors="coerce"
-    )
+    fechas = pd.to_datetime(copia["fecha_hora"], errors="coerce")
 
     # Verificar fechas validas
     if fechas.isna().any():
@@ -196,12 +169,12 @@ def interpolar_alturas(
         raise ValueError("Existen fechas duplicadas")
 
     # Verificar intervalos de una hora
-    intervalos = fechas.diff().dropna()  #Obtiene la separacion entre fechas consecutivas
+    intervalos = (
+        fechas.diff().dropna()
+    )  # Obtiene la separacion entre fechas consecutivas
 
     if not intervalos.eq(pd.Timedelta(hours=1)).all():
-        raise ValueError(
-            "Los registros no tienen intervalos horarios"
-        )
+        raise ValueError("Los registros no tienen intervalos horarios")
 
     # Identificar las alturas faltantes
     faltantes = copia["altura_significativa_m"].isna()
@@ -209,33 +182,25 @@ def interpolar_alturas(
     # Registrar cuales alturas necesitan estimacion
     copia["altura_estimada"] = faltantes.copy()
 
-    
-
     # Rechazar faltantes al inicio o al final
     if len(copia) == 0:
         raise ValueError("La tabla de oleaje esta vacia")
 
     if faltantes.iloc[0] or faltantes.iloc[-1]:
-        raise ValueError(
-            "Hay alturas faltantes en los extremos"
-        )
+        raise ValueError("Hay alturas faltantes en los extremos")
 
     # Rechazar valores faltantes consecutivos
-    if (faltantes & faltantes.shift(fill_value=False)).any():  #Shift, Desplaza los valores de una columna
-        raise ValueError(
-            "Existen alturas faltantes consecutivas"
-        )
+    if (
+        faltantes & faltantes.shift(fill_value=False)
+    ).any():  # Shift, Desplaza los valores de una columna
+        raise ValueError("Existen alturas faltantes consecutivas")
 
     # Calcular solamente las alturas estimadas
-    alturas_estimadas = copia[
-        "altura_significativa_m"
-    ].interpolate(method="linear", limit_area="inside")
+    alturas_estimadas = copia["altura_significativa_m"].interpolate(
+        method="linear", limit_area="inside"
+    )
 
     # Sustituir los valores faltantes solo en la copia
-    copia.loc[
-        faltantes, "altura_significativa_m"
-    ] = alturas_estimadas.loc[faltantes]
+    copia.loc[faltantes, "altura_significativa_m"] = alturas_estimadas.loc[faltantes]
 
     return copia
-
-

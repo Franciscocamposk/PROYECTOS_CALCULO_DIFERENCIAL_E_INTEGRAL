@@ -1,4 +1,3 @@
-
 """
 Preparación integral de registros de oleaje.
 
@@ -14,8 +13,8 @@ Nunca modifica el DataFrame original.
 
 import pandas as pd
 
-from src.limpieza import interpolar_alturas
 from src.energia_oleaje import calcular_flujo_por_hora
+from src.limpieza import interpolar_alturas
 
 
 def preparar_energia_oleaje(
@@ -66,9 +65,7 @@ def preparar_energia_oleaje(
 
     # Comprobar que la interpolación quedó completa.
     if datos["altura_significativa_m"].isna().any():
-        raise ValueError(
-            "Persisten alturas faltantes después de interpolar."
-        )
+        raise ValueError("Persisten alturas faltantes después de interpolar.")
 
     # Calcular el flujo energético sobre los datos preparados.
     resultados = calcular_flujo_por_hora(

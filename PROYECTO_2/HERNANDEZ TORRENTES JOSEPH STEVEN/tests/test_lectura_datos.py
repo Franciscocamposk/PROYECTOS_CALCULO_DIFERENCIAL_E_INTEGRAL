@@ -1,4 +1,3 @@
-
 """
 Pruebas automáticas de la lectura centralizada del Excel.
 
@@ -10,8 +9,6 @@ Se utilizan archivos temporales para comprobar que:
 
 No se modifica el archivo Excel original.
 """
-
-from pathlib import Path
 
 import pandas as pd
 import pytest
@@ -27,53 +24,60 @@ def hojas_validas():
     """
 
     return {
-        "Registros_oleaje": pd.DataFrame({
-            "fecha_hora": ["2026-05-01 00:00"],
-            "altura_significativa_m": [1.2],
-            "periodo_pico_s": [8.0],
-            "direccion_grados": [210],
-        }),
-        "Muestra_elevacion": pd.DataFrame({
-            "registro": [1],
-            "fecha_hora": ["2026-05-01 00:00"],
-            "tiempo_s": [0],
-            "elevacion_m": [0.2],
-        }),
-        "Opciones_convertidor": pd.DataFrame({
-            "convertidor": ["WEC-50"],
-            "ancho_captura_m": [0.5],
-            "eficiencia": [0.088],
-            "potencia_nominal_W": [500],
-            "costo_colones": [3210000],
-        }),
-        "Opciones_bateria": pd.DataFrame({
-            "bateria": ["B2"],
-            "capacidad_kWh": [2],
-            "costo_colones": [960000],
-        }),
-        "Parametros": pd.DataFrame({
-            "parametro": [
-                "Consumo de la estación",
-                "Densidad del agua de mar",
-                "Gravedad",
-                "Periodo energético / periodo pico",
-                "Máximo de horas sin energía",
-                "Carga inicial de la batería",
-            ],
-            "valor": [
-                300.0, 1025.0, 9.81, 0.90, 1.0, 100.0
-            ],
-            "unidad": [
-                "W", "kg/m³", "m/s²",
-                "fracción", "% de las horas", "%"
-            ],
-        }),
-        "Diccionario": pd.DataFrame({
-            "hoja": ["Registros_oleaje"],
-            "columna": ["altura_significativa_m"],
-            "descripcion": ["Altura significativa"],
-            "unidad": ["m"],
-        }),
+        "Registros_oleaje": pd.DataFrame(
+            {
+                "fecha_hora": ["2026-05-01 00:00"],
+                "altura_significativa_m": [1.2],
+                "periodo_pico_s": [8.0],
+                "direccion_grados": [210],
+            }
+        ),
+        "Muestra_elevacion": pd.DataFrame(
+            {
+                "registro": [1],
+                "fecha_hora": ["2026-05-01 00:00"],
+                "tiempo_s": [0],
+                "elevacion_m": [0.2],
+            }
+        ),
+        "Opciones_convertidor": pd.DataFrame(
+            {
+                "convertidor": ["WEC-50"],
+                "ancho_captura_m": [0.5],
+                "eficiencia": [0.088],
+                "potencia_nominal_W": [500],
+                "costo_colones": [3210000],
+            }
+        ),
+        "Opciones_bateria": pd.DataFrame(
+            {
+                "bateria": ["B2"],
+                "capacidad_kWh": [2],
+                "costo_colones": [960000],
+            }
+        ),
+        "Parametros": pd.DataFrame(
+            {
+                "parametro": [
+                    "Consumo de la estación",
+                    "Densidad del agua de mar",
+                    "Gravedad",
+                    "Periodo energético / periodo pico",
+                    "Máximo de horas sin energía",
+                    "Carga inicial de la batería",
+                ],
+                "valor": [300.0, 1025.0, 9.81, 0.90, 1.0, 100.0],
+                "unidad": ["W", "kg/m³", "m/s²", "fracción", "% de las horas", "%"],
+            }
+        ),
+        "Diccionario": pd.DataFrame(
+            {
+                "hoja": ["Registros_oleaje"],
+                "columna": ["altura_significativa_m"],
+                "descripcion": ["Altura significativa"],
+                "unidad": ["m"],
+            }
+        ),
     }
 
 

@@ -1,4 +1,3 @@
-
 """
 Lectura centralizada del archivo Excel del Proyecto 8.
 
@@ -12,11 +11,10 @@ import pandas as pd
 
 from src.limpieza import validar_columnas
 from src.validacion_parametros import (
-    validar_valores_parametros,
-    validar_convertidores,
     validar_baterias,
+    validar_convertidores,
+    validar_valores_parametros,
 )
-
 
 HOJAS_OBLIGATORIAS = {
     "Registros_oleaje",
@@ -62,9 +60,7 @@ def cargar_datos(ruta: str | Path) -> dict[str, pd.DataFrame]:
     ruta = Path(ruta)
 
     if not ruta.is_file():
-        raise FileNotFoundError(
-            f"No se encontró el archivo Excel: {ruta}"
-        )
+        raise FileNotFoundError(f"No se encontró el archivo Excel: {ruta}")
 
     # Leer todas las hojas en una sola operación.
     hojas = pd.read_excel(ruta, sheet_name=None)
@@ -73,10 +69,7 @@ def cargar_datos(ruta: str | Path) -> dict[str, pd.DataFrame]:
     faltantes = HOJAS_OBLIGATORIAS - set(hojas)
 
     if faltantes:
-        raise ValueError(
-            "Faltan hojas obligatorias: "
-            + ", ".join(sorted(faltantes))
-        )
+        raise ValueError("Faltan hojas obligatorias: " + ", ".join(sorted(faltantes)))
 
     # Validar las columnas de los registros de oleaje.
     validar_columnas(hojas["Registros_oleaje"])
@@ -87,9 +80,7 @@ def cargar_datos(ruta: str | Path) -> dict[str, pd.DataFrame]:
     validar_baterias(hojas["Opciones_bateria"])
 
     # Validar la estructura de la muestra de elevación.
-    faltantes_muestra = (
-        COLUMNAS_MUESTRA - set(hojas["Muestra_elevacion"].columns)
-    )
+    faltantes_muestra = COLUMNAS_MUESTRA - set(hojas["Muestra_elevacion"].columns)
 
     if faltantes_muestra:
         raise ValueError(
@@ -98,9 +89,7 @@ def cargar_datos(ruta: str | Path) -> dict[str, pd.DataFrame]:
         )
 
     # Validar la estructura del diccionario de datos.
-    faltantes_diccionario = (
-        COLUMNAS_DICCIONARIO - set(hojas["Diccionario"].columns)
-    )
+    faltantes_diccionario = COLUMNAS_DICCIONARIO - set(hojas["Diccionario"].columns)
 
     if faltantes_diccionario:
         raise ValueError(

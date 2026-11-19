@@ -1,4 +1,3 @@
-
 import pandas as pd
 
 
@@ -15,19 +14,15 @@ def validar_columnas_parametros(datos: pd.DataFrame) -> bool:
     ]
 
     columnas_faltantes = [
-        columna
-        for columna in columnas_obligatorias
-        if columna not in datos.columns
+        columna for columna in columnas_obligatorias if columna not in datos.columns
     ]
 
     if columnas_faltantes:
         raise ValueError(
-            "Faltan columnas en Parametros: "
-            + ", ".join(columnas_faltantes)
+            "Faltan columnas en Parametros: " + ", ".join(columnas_faltantes)
         )
 
     return True
-
 
 
 def validar_nombres_parametros(datos: pd.DataFrame) -> bool:
@@ -84,12 +79,10 @@ def validar_nombres_parametros(datos: pd.DataFrame) -> bool:
 
     if faltantes:
         raise ValueError(
-            "Faltan parámetros obligatorios: "
-            + ", ".join(sorted(faltantes))
+            "Faltan parámetros obligatorios: " + ", ".join(sorted(faltantes))
         )
 
     return True
-
 
 
 def validar_valores_parametros(datos: pd.DataFrame) -> bool:
@@ -156,9 +149,7 @@ def validar_valores_parametros(datos: pd.DataFrame) -> bool:
             or not isinstance(valor, Real)
             or not math.isfinite(valor)
         ):
-            raise ValueError(
-                f"Valor numérico inválido para: {nombre}"
-            )
+            raise ValueError(f"Valor numérico inválido para: {nombre}")
 
         # Comprobar que la unidad sea la esperada.
         if unidad != unidades_esperadas[nombre]:
@@ -175,17 +166,12 @@ def validar_valores_parametros(datos: pd.DataFrame) -> bool:
             minimo_invalido = valor <= minimo
 
         if minimo_invalido:
-            raise ValueError(
-                f"Valor fuera de rango para: {nombre}"
-            )
+            raise ValueError(f"Valor fuera de rango para: {nombre}")
 
         if maximo is not None and valor > maximo:
-            raise ValueError(
-                f"Valor fuera de rango para: {nombre}"
-            )
+            raise ValueError(f"Valor fuera de rango para: {nombre}")
 
     return True
-
 
 
 def validar_convertidores(datos: pd.DataFrame) -> bool:
@@ -214,15 +200,11 @@ def validar_convertidores(datos: pd.DataFrame) -> bool:
         "costo_colones",
     ]
 
-    faltantes = [
-        columna for columna in columnas
-        if columna not in datos.columns
-    ]
+    faltantes = [columna for columna in columnas if columna not in datos.columns]
 
     if faltantes:
         raise ValueError(
-            "Faltan columnas en Opciones_convertidor: "
-            + ", ".join(faltantes)
+            "Faltan columnas en Opciones_convertidor: " + ", ".join(faltantes)
         )
 
     if datos.empty:
@@ -265,10 +247,7 @@ def validar_convertidores(datos: pd.DataFrame) -> bool:
     if (datos["ancho_captura_m"] <= 0).any():
         raise ValueError("Ancho de captura inválido")
 
-    if (
-        (datos["eficiencia"] <= 0)
-        | (datos["eficiencia"] > 1)
-    ).any():
+    if ((datos["eficiencia"] <= 0) | (datos["eficiencia"] > 1)).any():
         raise ValueError("Eficiencia fuera de rango")
 
     if (datos["potencia_nominal_W"] <= 0).any():
@@ -278,7 +257,6 @@ def validar_convertidores(datos: pd.DataFrame) -> bool:
         raise ValueError("Costo de convertidor inválido")
 
     return True
-
 
 
 def validar_baterias(datos: pd.DataFrame) -> bool:
@@ -313,16 +291,11 @@ def validar_baterias(datos: pd.DataFrame) -> bool:
 
     # Comprobar las columnas requeridas.
     faltantes = [
-        columna
-        for columna in columnas_obligatorias
-        if columna not in datos.columns
+        columna for columna in columnas_obligatorias if columna not in datos.columns
     ]
 
     if faltantes:
-        raise ValueError(
-            "Faltan columnas en Opciones_bateria: "
-            + ", ".join(faltantes)
-        )
+        raise ValueError("Faltan columnas en Opciones_bateria: " + ", ".join(faltantes))
 
     if datos.empty:
         raise ValueError("No existen baterías registradas")
@@ -355,20 +328,12 @@ def validar_baterias(datos: pd.DataFrame) -> bool:
             or pd.api.types.is_bool_dtype(valores)
             or valores.isna().any()
         ):
-            raise ValueError(
-                f"Valores numéricos inválidos en {columna}"
-            )
+            raise ValueError(f"Valores numéricos inválidos en {columna}")
 
-        if not np.isfinite(
-            valores.to_numpy(dtype=float)
-        ).all():
-            raise ValueError(
-                f"Valores no finitos en {columna}"
-            )
+        if not np.isfinite(valores.to_numpy(dtype=float)).all():
+            raise ValueError(f"Valores no finitos en {columna}")
 
         if (valores <= 0).any():
-            raise ValueError(
-                f"Los valores de {columna} deben ser positivos"
-            )
+            raise ValueError(f"Los valores de {columna} deben ser positivos")
 
     return True

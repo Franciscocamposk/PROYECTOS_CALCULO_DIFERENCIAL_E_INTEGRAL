@@ -1,4 +1,3 @@
-
 """Pruebas del modelo físico de energía de las olas."""
 
 import numpy as np
@@ -47,11 +46,13 @@ def test_rechazar_valores_fisicamente_invalidos():
 
 def test_calculo_por_hora_conserva_original_y_nan():
     """El cálculo debe conservar los faltantes y el original."""
-    registros = pd.DataFrame({
-        "fecha_hora": pd.date_range("2026-05-01", periods=2, freq="h"),
-        "altura_significativa_m": [1.0, np.nan],
-        "periodo_pico_s": [8.0, 9.0],
-    })
+    registros = pd.DataFrame(
+        {
+            "fecha_hora": pd.date_range("2026-05-01", periods=2, freq="h"),
+            "altura_significativa_m": [1.0, np.nan],
+            "periodo_pico_s": [8.0, 9.0],
+        }
+    )
 
     original = registros.copy(deep=True)
 
@@ -64,11 +65,13 @@ def test_calculo_por_hora_conserva_original_y_nan():
 
 def test_rechazar_periodos_negativos_en_tabla():
     """La función debe rechazar periodos inválidos."""
-    registros = pd.DataFrame({
-        "fecha_hora": ["2026-05-01"],
-        "altura_significativa_m": [1.0],
-        "periodo_pico_s": [-2.0],
-    })
+    registros = pd.DataFrame(
+        {
+            "fecha_hora": ["2026-05-01"],
+            "altura_significativa_m": [1.0],
+            "periodo_pico_s": [-2.0],
+        }
+    )
 
     with pytest.raises(ValueError):
         calcular_flujo_por_hora(registros)

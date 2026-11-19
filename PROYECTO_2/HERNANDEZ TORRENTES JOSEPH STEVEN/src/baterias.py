@@ -1,4 +1,3 @@
-
 """
 Simulación horaria de baterías para el Proyecto 8.
 
@@ -42,9 +41,7 @@ def simular_bateria(
     datos = registros.copy(deep=True)
 
     if "fecha_hora" in datos.columns:
-        datos["fecha_hora"] = pd.to_datetime(
-            datos["fecha_hora"], errors="raise"
-        )
+        datos["fecha_hora"] = pd.to_datetime(datos["fecha_hora"], errors="raise")
         datos = datos.sort_values("fecha_hora").reset_index(drop=True)
 
         if datos["fecha_hora"].duplicated().any():
@@ -55,9 +52,7 @@ def simular_bateria(
         if not (diferencias == pd.Timedelta(hours=1)).all():
             raise ValueError("Los registros deben ser horarios consecutivos.")
 
-    potencias = pd.to_numeric(
-        datos["potencia_generada_w"], errors="raise"
-    )
+    potencias = pd.to_numeric(datos["potencia_generada_w"], errors="raise")
 
     if potencias.isna().any() or not np.isfinite(potencias).all():
         raise ValueError("Hay potencias faltantes o no finitas.")
@@ -97,15 +92,17 @@ def simular_bateria(
         # toda la energía solicitada.
         cubierta = energia_no_servida <= 1e-9
 
-        resultados.append({
-            "energia_bateria_inicio_wh": energia_inicial,
-            "energia_generada_wh": generacion_wh,
-            "energia_servida_wh": energia_servida,
-            "energia_no_servida_wh": max(0.0, energia_no_servida),
-            "energia_vertida_wh": max(0.0, energia_vertida),
-            "energia_bateria_final_wh": energia,
-            "hora_cubierta": bool(cubierta),
-        })
+        resultados.append(
+            {
+                "energia_bateria_inicio_wh": energia_inicial,
+                "energia_generada_wh": generacion_wh,
+                "energia_servida_wh": energia_servida,
+                "energia_no_servida_wh": max(0.0, energia_no_servida),
+                "energia_vertida_wh": max(0.0, energia_vertida),
+                "energia_bateria_final_wh": energia,
+                "hora_cubierta": bool(cubierta),
+            }
+        )
 
     return pd.concat(
         [datos, pd.DataFrame(resultados)],
@@ -127,15 +124,10 @@ def resumir_simulacion(simulacion: pd.DataFrame) -> dict:
         "horas_cubiertas": cubiertas,
         "horas_sin_cobertura": total - cubiertas,
         "disponibilidad_pct": 100.0 * cubiertas / total,
-        "energia_no_servida_wh": float(
-            simulacion["energia_no_servida_wh"].sum()
-        ),
-        "energia_final_wh": float(
-            simulacion["energia_bateria_final_wh"].iloc[-1]
-        ),
+        "energia_no_servida_wh": float(simulacion["energia_no_servida_wh"].sum()),
+        "energia_final_wh": float(simulacion["energia_bateria_final_wh"].iloc[-1]),
         "cumple_99_pct": cubiertas / total >= 0.99,
     }
-
 
 
 class Bateria:
@@ -212,15 +204,17 @@ class Bateria:
             self.energia_wh += carga
             desperdiciada = max(0.0, excedente - carga)
 
-            resultados.append({
-                "energia_inicial_wh": inicial,
-                "energia_generada_wh": generada,
-                "energia_consumida_wh": demanda,
-                "energia_servida_wh": servida,
-                "energia_no_servida_wh": no_atendida,
-                "energia_vertida_wh": desperdiciada,
-                "energia_bateria_final_wh": self.energia_wh,
-                "hora_cubierta": no_atendida <= 1e-9,
-            })
+            resultados.append(
+                {
+                    "energia_inicial_wh": inicial,
+                    "energia_generada_wh": generada,
+                    "energia_consumida_wh": demanda,
+                    "energia_servida_wh": servida,
+                    "energia_no_servida_wh": no_atendida,
+                    "energia_vertida_wh": desperdiciada,
+                    "energia_bateria_final_wh": self.energia_wh,
+                    "hora_cubierta": no_atendida <= 1e-9,
+                }
+            )
 
         return pd.DataFrame(resultados)

@@ -1,4 +1,3 @@
-
 """Pruebas del procesamiento energético completo."""
 
 import numpy as np
@@ -10,16 +9,14 @@ from src.procesamiento_oleaje import preparar_energia_oleaje
 
 def crear_registros():
     """Genera datos horarios de ejemplo con un faltante aislado."""
-    return pd.DataFrame({
-        "fecha_hora": pd.date_range(
-            "2026-05-01", periods=5, freq="h"
-        ),
-        "altura_significativa_m": [
-            1.0, 1.2, np.nan, 1.6, 1.8
-        ],
-        "periodo_pico_s": [8.0] * 5,
-        "direccion_grados": [200] * 5,
-    })
+    return pd.DataFrame(
+        {
+            "fecha_hora": pd.date_range("2026-05-01", periods=5, freq="h"),
+            "altura_significativa_m": [1.0, 1.2, np.nan, 1.6, 1.8],
+            "periodo_pico_s": [8.0] * 5,
+            "direccion_grados": [200] * 5,
+        }
+    )
 
 
 def test_interpolar_y_calcular_todas_las_horas():
@@ -55,14 +52,10 @@ def test_flujo_calculado_correctamente():
 
     esperado = 1025 * 9.81**2 / (64 * np.pi) * 1.0**2 * 7.2
 
-    assert resultado.loc[0, "flujo_energia_w_m"] == pytest.approx(
-        esperado
-    )
+    assert resultado.loc[0, "flujo_energia_w_m"] == pytest.approx(esperado)
 
 
 def test_rechazar_columnas_faltantes():
     """Rechaza tablas sin las columnas requeridas."""
     with pytest.raises(ValueError):
-        preparar_energia_oleaje(
-            pd.DataFrame({"fecha_hora": ["2026-05-01"]})
-        )
+        preparar_energia_oleaje(pd.DataFrame({"fecha_hora": ["2026-05-01"]}))

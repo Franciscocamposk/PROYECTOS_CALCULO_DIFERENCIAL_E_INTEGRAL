@@ -1,34 +1,33 @@
-
 import pandas as pd
 import pytest
 
 from src.limpieza import (
-    validar_columnas,
-    detectar_faltantes,
     detectar_atipicos,
-    preparar_copia,
+    detectar_faltantes,
     interpolar_alturas,
+    preparar_copia,
+    validar_columnas,
 )
+
+
 def test_validar_columnas_correctas():
     """
     Comprueba que una tabla con las cuatro columnas
     obligatorias sea aceptada.
     """
 
-    datos = pd.DataFrame({
-        "fecha_hora": ["2026-05-01 00:00"],
-        "altura_significativa_m": [1.2],
-        "periodo_pico_s": [8.0],
-        "direccion_grados": [210],
-    })
+    datos = pd.DataFrame(
+        {
+            "fecha_hora": ["2026-05-01 00:00"],
+            "altura_significativa_m": [1.2],
+            "periodo_pico_s": [8.0],
+            "direccion_grados": [210],
+        }
+    )
 
     resultado = validar_columnas(datos)
 
     assert resultado is True
-
-
-
-from src.limpieza import detectar_faltantes
 
 
 def test_detectar_faltantes():
@@ -37,19 +36,20 @@ def test_detectar_faltantes():
     los valores faltantes.
     """
 
-    datos = pd.DataFrame({
-        "altura_significativa_m": [
-            1.2,
-            None,
-            1.5,
-            None,
-        ]
-    })
+    datos = pd.DataFrame(
+        {
+            "altura_significativa_m": [
+                1.2,
+                None,
+                1.5,
+                None,
+            ]
+        }
+    )
 
     resultado = detectar_faltantes(datos)
 
     assert resultado["altura_significativa_m"] == 2
-
 
 
 def test_validar_columnas_faltantes():
@@ -59,17 +59,16 @@ def test_validar_columnas_faltantes():
     """
 
     # Crear una tabla incompleta
-    datos = pd.DataFrame({
-        "fecha_hora": ["2026-05-01 00:00"],
-        "altura_significativa_m": [1.2],
-        "periodo_pico_s": [8.0],
-    })
+    datos = pd.DataFrame(
+        {
+            "fecha_hora": ["2026-05-01 00:00"],
+            "altura_significativa_m": [1.2],
+            "periodo_pico_s": [8.0],
+        }
+    )
 
     # Verificar que la función rechaza la tabla
-    with pytest.raises(
-        ValueError,
-        match="direccion_grados"
-    ):
+    with pytest.raises(ValueError, match="direccion_grados"):
         validar_columnas(datos)
 
 
@@ -80,40 +79,38 @@ def test_interpolar_fechas_duplicadas():
     """
 
     # Crear datos de prueba con una fecha duplicada
-    datos = pd.DataFrame({
-        "fecha_hora": [
-            "2026-05-01 00:00",
-            "2026-05-01 01:00",
-            "2026-05-01 01:00",
-            "2026-05-01 02:00",
-        ],
-        "altura_significativa_m": [
-            1.2,
-            1.3,
-            None,
-            1.5,
-        ],
-        "periodo_pico_s": [
-            8.0,
-            8.2,
-            8.3,
-            8.5,
-        ],
-        "direccion_grados": [
-            210,
-            211,
-            212,
-            213,
-        ],
-    })
+    datos = pd.DataFrame(
+        {
+            "fecha_hora": [
+                "2026-05-01 00:00",
+                "2026-05-01 01:00",
+                "2026-05-01 01:00",
+                "2026-05-01 02:00",
+            ],
+            "altura_significativa_m": [
+                1.2,
+                1.3,
+                None,
+                1.5,
+            ],
+            "periodo_pico_s": [
+                8.0,
+                8.2,
+                8.3,
+                8.5,
+            ],
+            "direccion_grados": [
+                210,
+                211,
+                212,
+                213,
+            ],
+        }
+    )
 
     # Esperamos que la funcion genere un error
-    with pytest.raises(
-        ValueError,
-        match="Existen fechas duplicadas"
-    ):
+    with pytest.raises(ValueError, match="Existen fechas duplicadas"):
         interpolar_alturas(datos)
-
 
 
 def test_interpolar_faltantes_consecutivos():
@@ -123,40 +120,38 @@ def test_interpolar_faltantes_consecutivos():
     """
 
     # Crear una tabla con dos alturas faltantes
-    datos = pd.DataFrame({
-        "fecha_hora": [
-            "2026-05-01 00:00",
-            "2026-05-01 01:00",
-            "2026-05-01 02:00",
-            "2026-05-01 03:00",
-        ],
-        "altura_significativa_m": [
-            1.2,
-            None,
-            None,
-            1.5,
-        ],
-        "periodo_pico_s": [
-            8.0,
-            8.2,
-            8.4,
-            8.6,
-        ],
-        "direccion_grados": [
-            210,
-            211,
-            212,
-            213,
-        ],
-    })
+    datos = pd.DataFrame(
+        {
+            "fecha_hora": [
+                "2026-05-01 00:00",
+                "2026-05-01 01:00",
+                "2026-05-01 02:00",
+                "2026-05-01 03:00",
+            ],
+            "altura_significativa_m": [
+                1.2,
+                None,
+                None,
+                1.5,
+            ],
+            "periodo_pico_s": [
+                8.0,
+                8.2,
+                8.4,
+                8.6,
+            ],
+            "direccion_grados": [
+                210,
+                211,
+                212,
+                213,
+            ],
+        }
+    )
 
     # Verificar que la funcion rechace estos datos
-    with pytest.raises(
-        ValueError,
-        match="Existen alturas faltantes consecutivas"
-    ):
+    with pytest.raises(ValueError, match="Existen alturas faltantes consecutivas"):
         interpolar_alturas(datos)
-
 
 
 def test_interpolar_conserva_original():
@@ -169,28 +164,30 @@ def test_interpolar_conserva_original():
     """
 
     # Crear datos de prueba
-    datos = pd.DataFrame({
-        "fecha_hora": [
-            "2026-05-01 00:00",
-            "2026-05-01 01:00",
-            "2026-05-01 02:00",
-        ],
-        "altura_significativa_m": [
-            1.2,
-            None,
-            1.4,
-        ],
-        "periodo_pico_s": [
-            8.0,
-            8.2,
-            8.4,
-        ],
-        "direccion_grados": [
-            210,
-            211,
-            212,
-        ],
-    })
+    datos = pd.DataFrame(
+        {
+            "fecha_hora": [
+                "2026-05-01 00:00",
+                "2026-05-01 01:00",
+                "2026-05-01 02:00",
+            ],
+            "altura_significativa_m": [
+                1.2,
+                None,
+                1.4,
+            ],
+            "periodo_pico_s": [
+                8.0,
+                8.2,
+                8.4,
+            ],
+            "direccion_grados": [
+                210,
+                211,
+                212,
+            ],
+        }
+    )
 
     # Guardar una copia del estado original
     original = datos.copy(deep=True)
@@ -199,9 +196,7 @@ def test_interpolar_conserva_original():
     resultado = interpolar_alturas(datos)
 
     # Verificar la altura interpolada
-    assert resultado.loc[1, "altura_significativa_m"] == (
-        pytest.approx(1.3)
-    )
+    assert resultado.loc[1, "altura_significativa_m"] == (pytest.approx(1.3))
 
     # Verificar las alturas que ya existian
     assert resultado.loc[0, "altura_significativa_m"] == 1.2
@@ -232,7 +227,6 @@ def test_interpolar_conserva_original():
         )
 
 
-
 def test_interpolar_faltante_al_inicio():
     """
     Comprueba que la interpolacion rechace
@@ -240,34 +234,34 @@ def test_interpolar_faltante_al_inicio():
     """
 
     # Crear tres registros horarios
-    datos = pd.DataFrame({
-        "fecha_hora": [
-            "2026-05-01 00:00",
-            "2026-05-01 01:00",
-            "2026-05-01 02:00",
-        ],
-        "altura_significativa_m": [
-            None,
-            1.2,
-            1.4,
-        ],
-        "periodo_pico_s": [
-            8.0,
-            8.2,
-            8.4,
-        ],
-        "direccion_grados": [
-            210,
-            211,
-            212,
-        ],
-    })
+    datos = pd.DataFrame(
+        {
+            "fecha_hora": [
+                "2026-05-01 00:00",
+                "2026-05-01 01:00",
+                "2026-05-01 02:00",
+            ],
+            "altura_significativa_m": [
+                None,
+                1.2,
+                1.4,
+            ],
+            "periodo_pico_s": [
+                8.0,
+                8.2,
+                8.4,
+            ],
+            "direccion_grados": [
+                210,
+                211,
+                212,
+            ],
+        }
+    )
 
     # Esperamos que la funcion rechace estos datos
     with pytest.raises(ValueError):
         interpolar_alturas(datos)
-
-
 
 
 def test_interpolar_faltante_al_final():
@@ -277,33 +271,34 @@ def test_interpolar_faltante_al_final():
     """
 
     # Crear tres registros horarios
-    datos = pd.DataFrame({
-        "fecha_hora": [
-            "2026-05-01 00:00",
-            "2026-05-01 01:00",
-            "2026-05-01 02:00",
-        ],
-        "altura_significativa_m": [
-            1.2,
-            1.4,
-            None,
-        ],
-        "periodo_pico_s": [
-            8.0,
-            8.2,
-            8.4,
-        ],
-        "direccion_grados": [
-            210,
-            211,
-            212,
-        ],
-    })
+    datos = pd.DataFrame(
+        {
+            "fecha_hora": [
+                "2026-05-01 00:00",
+                "2026-05-01 01:00",
+                "2026-05-01 02:00",
+            ],
+            "altura_significativa_m": [
+                1.2,
+                1.4,
+                None,
+            ],
+            "periodo_pico_s": [
+                8.0,
+                8.2,
+                8.4,
+            ],
+            "direccion_grados": [
+                210,
+                211,
+                212,
+            ],
+        }
+    )
 
     # Comprobar que se genera un error
     with pytest.raises(ValueError):
         interpolar_alturas(datos)
-
 
 
 def test_interpolar_rechaza_salto_horario():
@@ -313,33 +308,34 @@ def test_interpolar_rechaza_salto_horario():
     """
 
     # Crear datos con una hora faltante
-    datos = pd.DataFrame({
-        "fecha_hora": [
-            "2026-05-01 00:00",
-            "2026-05-01 01:00",
-            "2026-05-01 03:00",
-        ],
-        "altura_significativa_m": [
-            1.2,
-            None,
-            1.4,
-        ],
-        "periodo_pico_s": [
-            8.0,
-            8.2,
-            8.4,
-        ],
-        "direccion_grados": [
-            210,
-            211,
-            212,
-        ],
-    })
+    datos = pd.DataFrame(
+        {
+            "fecha_hora": [
+                "2026-05-01 00:00",
+                "2026-05-01 01:00",
+                "2026-05-01 03:00",
+            ],
+            "altura_significativa_m": [
+                1.2,
+                None,
+                1.4,
+            ],
+            "periodo_pico_s": [
+                8.0,
+                8.2,
+                8.4,
+            ],
+            "direccion_grados": [
+                210,
+                211,
+                212,
+            ],
+        }
+    )
 
     # Verificar que la funcion rechaza el salto horario
     with pytest.raises(ValueError):
         interpolar_alturas(datos)
-
 
 
 def test_detectar_atipicos():
@@ -349,22 +345,21 @@ def test_detectar_atipicos():
     """
 
     # Crear alturas de ejemplo
-    datos = pd.DataFrame({
-        "altura_significativa_m": [
-            1.0,
-            1.1,
-            1.2,
-            1.3,
-            1.4,
-            5.0,
-        ],
-    })
+    datos = pd.DataFrame(
+        {
+            "altura_significativa_m": [
+                1.0,
+                1.1,
+                1.2,
+                1.3,
+                1.4,
+                5.0,
+            ],
+        }
+    )
 
     # Ejecutar la deteccion de valores atipicos
-    resultado = detectar_atipicos(
-        datos,
-        "altura_significativa_m"
-    )
+    resultado = detectar_atipicos(datos, "altura_significativa_m")
 
     # Comprobar que se detecta un solo valor
     assert len(resultado) == 1
@@ -377,7 +372,6 @@ def test_detectar_atipicos():
     assert datos["altura_significativa_m"].iloc[5] == 5.0
 
 
-
 def test_preparar_copia_independiente():
     """
     Comprueba que modificar la copia no afecte
@@ -385,12 +379,14 @@ def test_preparar_copia_independiente():
     """
 
     # Crear datos originales de ejemplo
-    datos = pd.DataFrame({
-        "altura_significativa_m": [
-            1.2,
-            1.4,
-        ]
-    })
+    datos = pd.DataFrame(
+        {
+            "altura_significativa_m": [
+                1.2,
+                1.4,
+            ]
+        }
+    )
 
     # Crear una copia con nuestra funcion
     copia = preparar_copia(datos)

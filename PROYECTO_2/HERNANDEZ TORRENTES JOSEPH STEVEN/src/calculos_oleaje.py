@@ -1,4 +1,3 @@
-
 """
 Cálculos físicos iniciales del oleaje para el Proyecto 8.
 
@@ -12,7 +11,7 @@ src/integracion.py, sin modificar los datos originales.
 import numpy as np
 import pandas as pd
 
-from src.integracion import trapecio_compuesto, simpson_compuesto
+from src.integracion import simpson_compuesto, trapecio_compuesto
 
 
 def calcular_altura_significativa(tiempo_s, elevacion_m, metodo="trapecio"):
@@ -46,12 +45,11 @@ def calcular_altura_significativa(tiempo_s, elevacion_m, metodo="trapecio"):
     if duracion <= 0:
         raise ValueError("La duración de la muestra debe ser positiva.")
 
-    elevacion_cuadrada = elevacion ** 2
+    elevacion_cuadrada = elevacion**2
 
     if metodo == "trapecio":
         integral = trapecio_compuesto(tiempo, elevacion_cuadrada)
 
-        
     elif metodo == "simpson":
         integral = simpson_compuesto(tiempo, elevacion_cuadrada)
 
@@ -64,18 +62,14 @@ def calcular_altura_significativa(tiempo_s, elevacion_m, metodo="trapecio"):
         if n % 2 == 0:
             integral = simpson_compuesto(tiempo, elevacion_cuadrada)
         elif n >= 3:
-            integral = (
-                simpson_compuesto(tiempo[:-1], elevacion_cuadrada[:-1])
-                + trapecio_compuesto(tiempo[-2:], elevacion_cuadrada[-2:])
-            )
+            integral = simpson_compuesto(
+                tiempo[:-1], elevacion_cuadrada[:-1]
+            ) + trapecio_compuesto(tiempo[-2:], elevacion_cuadrada[-2:])
         else:
             # Con un solo subintervalo solo procede trapecio.
             integral = trapecio_compuesto(tiempo, elevacion_cuadrada)
 
     else:
-
-
-
         raise ValueError("Método desconocido. Use 'trapecio' o 'simpson'.")
 
     varianza = integral / duracion
@@ -114,9 +108,11 @@ def calcular_por_registro(muestras, metodo="trapecio"):
             metodo=metodo,
         )
 
-        resultados.append({
-            "registro": registro,
-            **calculo,
-        })
+        resultados.append(
+            {
+                "registro": registro,
+                **calculo,
+            }
+        )
 
     return pd.DataFrame(resultados)

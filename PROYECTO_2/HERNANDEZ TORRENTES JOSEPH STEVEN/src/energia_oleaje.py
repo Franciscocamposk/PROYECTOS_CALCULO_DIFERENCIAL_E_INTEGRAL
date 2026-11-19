@@ -1,4 +1,3 @@
-
 """
 Modelo físico del flujo energético de las olas.
 
@@ -91,14 +90,10 @@ def calcular_flujo_por_hora(
     resultado = registros.copy(deep=True)
 
     for columna in ["altura_significativa_m", "periodo_pico_s"]:
-        resultado[columna] = pd.to_numeric(
-            resultado[columna], errors="raise"
-        )
+        resultado[columna] = pd.to_numeric(resultado[columna], errors="raise")
 
     # Verificar parámetros incluso si no hay registros válidos.
-    calcular_flujo_energia(
-        0, 1, densidad_kg_m3, gravedad_m_s2, relacion_periodos
-    )
+    calcular_flujo_energia(0, 1, densidad_kg_m3, gravedad_m_s2, relacion_periodos)
 
     altura = resultado["altura_significativa_m"]
     periodo = resultado["periodo_pico_s"]
@@ -112,16 +107,12 @@ def calcular_flujo_por_hora(
     if invalidos.any():
         raise ValueError("Hay alturas o periodos físicamente inválidos.")
 
-    resultado["periodo_energetico_s"] = (
-        relacion_periodos * periodo
-    )
+    resultado["periodo_energetico_s"] = relacion_periodos * periodo
 
     factor = densidad_kg_m3 * gravedad_m_s2**2 / (64 * np.pi)
 
     resultado["flujo_energia_w_m"] = (
-        factor
-        * altura**2
-        * resultado["periodo_energetico_s"]
+        factor * altura**2 * resultado["periodo_energetico_s"]
     )
 
     return resultado
