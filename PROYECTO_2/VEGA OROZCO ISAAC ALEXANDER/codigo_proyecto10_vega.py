@@ -104,7 +104,7 @@ def ejecutar_demostracion_completa(ruta_excel: Path | None = None) -> None:
             f"Horas extra = {r['horas_extra']:>5.1f} h | Costo Total = CRC {r['costo_total_CRC']:>10,.0f} | {etiqueta}"
         )
 
-    # 6. Recomendación y sensibilidad (+10 puntos porcentuales)
+    # 6. Recomendación y sensibilidad  
     print(f"\n[6] RECOMENDACIÓN Y SENSIBILIDAD (+10 PUNTOS PORCENTUALES -> {params['meta_pct'] + 10:.0f}%)")
     if opt_base:
         print(f"  • Medida recomendada: Opción {opt_base['opcion']} ({opt_base['descripcion']})")
