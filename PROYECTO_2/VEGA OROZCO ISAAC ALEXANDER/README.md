@@ -1,50 +1,25 @@
 # Proyecto 10 — Ruido de embarcaciones y ballenas jorobadas en el Golfo Dulce
 
-![Proyecto](https://img.shields.io/badge/Proyecto%202-10-0b4f8a?style=flat-square) ![Código](https://img.shields.io/badge/Código-C--08-2e7d32?style=flat-square) ![Modalidad](https://img.shields.io/badge/Modalidad-Individual-e08a2e?style=flat-square)
+- **Estudiante:** Isaac Alexander Vega Orozco
+- **Código:** `C-08`
+- **Curso:** MA-0321 Cálculo Diferencial e Integral (Universidad de Costa Rica, Sede del Sur)
 
-**Estudiante:** Isaac Alexander Vega Orozco  
-**Código:** C-08  
-**Modalidad:** individual
+## Estructura del Proyecto
+- `datos/P10_C-08_VEGA.xlsx`: Base de datos asignada (sin modificar).
+- `src/limpieza.py`: Carga, validación e imputación de faltantes y atípicos.
+- `src/modelo.py`: Integración numérica (`trapecio_propio`, `simpson_propio`), fórmula analítica (`energia_paso`), calibración (`estimar_fuente`) y clase `ModeloAcusticoGolfo`.
+- `src/escenarios.py`: Evaluación de medidas (`evaluar_medida`) y análisis de sensibilidad.
+- `src/reporte.py`: Regenera tablas y figuras reproducibles en `resultados/`.
+- `tests/test_proyecto10.py`: Pruebas automáticas con `pytest` (10 pruebas).
+- `codigo_proyecto10_vega.py`: Script principal de demostración en consola.
+- `app.py`: Aplicación web interactiva en Streamlit.
+- `presentacion/Presentacion_P10_C-08_VEGA.pdf`: Diapositivas ejecutivas (10 láminas).
 
-## Pregunta de decisión
-
-¿Qué medida reduce la energía sonora recibida por las ballenas, con el menor costo para la temporada?
-
-## Objetivo y desarrollo
-
-Analizar la energía sonora acumulada mediante integración, comparar medidas de control y recomendar la alternativa de menor costo y mayor reducción.
-
-## Modelo matemático
-
-La presión acústica al cuadrado y la energía sonora de un paso se modelan como:
-
-$$
-p^2(t)=\frac{S(v)}{d^2+v^2t^2}
-$$
-
-$$
-E=\int_{-\infty}^{\infty}p^2(t)\,dt=\frac{\pi S(v)}{dv}
-$$
-
-Para un intervalo truncado y para la temporada completa:
-
-$$
-\int_{-T}^{T}p^2(t)\,dt=\frac{2S(v)}{dv}\arctan(vT/d)
-$$
-
-$$
-S(v)=S_0(v/v_0)^n,
-\qquad
-E_{\mathrm{temp}}=\sum_k\frac{\pi S(v_k)}{d_kv_k}
-$$
-
-La medida elegida cumple la reducción mínima de energía con el menor costo de temporada.
-
-## Archivos
-
-- [Informe PDF](P10_C-08_VEGA.pdf)
-- [Datos y cálculos](P10_C-08_VEGA.xlsx)
-
-## Cómo revisar
-
-Leer el informe para conocer el caso y contrastar sus resultados con la hoja de cálculo.
+## Cómo ejecutar
+```bash
+pip install -r requirements.txt
+pytest -v
+python codigo_proyecto10_vega.py
+python -m src.reporte
+streamlit run app.py
+```
