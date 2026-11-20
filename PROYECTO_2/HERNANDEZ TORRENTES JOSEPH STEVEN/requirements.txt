@@ -1,0 +1,13 @@
+numpy==2.5.5
+pandas==3.1.1
+openpyxl==3.1.5
+pytest==9.2.0
+streamlit==1.67.0
+altair==6.3.0
+notebook
+ipykernel
+matplotlib
+
+ipykernel==7.4.0
+matplotlib==3.11.2
+nbformat==5.11.1
