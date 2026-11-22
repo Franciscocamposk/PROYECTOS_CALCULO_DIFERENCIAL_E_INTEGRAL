@@ -1,0 +1,2 @@
+﻿convertidor,bateria,disponibilidad_normal_pct,horas_sin_cobertura_normal,cumple_normal,costo_total_colones,disponibilidad_moderado_pct,horas_sin_cobertura_moderado,cumple_moderado,disponibilidad_adverso_pct,horas_sin_cobertura_adverso,cumple_adverso,cumple_tres
+WEC-150,B20,100.0,0,True,15990000,100.0,0,True,100.0,0,True,True

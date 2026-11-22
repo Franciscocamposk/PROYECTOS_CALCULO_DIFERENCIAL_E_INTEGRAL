@@ -1,0 +1,37 @@
+
+# Entorno virtual de Python
+.venv/
+venv/
+
+# Archivos temporales de Python
+__pycache__/
+*.py[cod]
+*.pyd
+
+# Caché de pytest
+.pytest_cache/
+
+# Caché de herramientas de calidad
+.ruff_cache/
+.mypy_cache/
+
+# Archivos temporales de Jupyter
+.ipynb_checkpoints/
+
+# Configuración local de VS Code
+.vscode/
+
+# Variables de entorno y credenciales
+.env
+.env.*
+!.env.example
+
+# Archivos temporales del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos temporales de Excel
+~$*.xlsx
+
+# Archivos de registro
+*.log
